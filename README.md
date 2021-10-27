@@ -1,8 +1,5 @@
 # StudentHousingFinder
 
-## Authors:
-Bernard Ekezie & Esther Lam
-
 # Project Objective:
 An application that lets users explore a list of student housing. It will support:
 CRUD dorm/apartment listings
@@ -13,6 +10,9 @@ Monthly/annual statistics for owners/renters
 Favorites for users?
 Users can rate dorm/apartment listings
 ![Logo](screenshots/SH.png)
+
+## Authors:
+Bernard Ekezie & Esther Lam
 
 UML Diagram
 ![Logo](screenshots/Project1_UML.png)
