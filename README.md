@@ -12,6 +12,19 @@ It will support:
 * Users can rate dorm/apartment listings
 * Monthly/annual statistics for owners/renters*
 * Favorites for users*
+* *We were not able to finish implementing these items.
+
+@Ely Lam implemented:
+* Registering the owners and updating their listings as they post new housing listings.
+* CRUD operations on the listings.
+* CRUD operations on the messages between users and ensuring each message has one distinct sender and one distinct receiver.
+* Making sure users are alloted separate accesses to listings than students are.
+
+@Bernard Ekezie implemented:
+* Registering the students and updating their ratings per listing.
+* CRUD operations on the students and schools
+* CRUD operations on the ratings
+* CRUD operations on the user and ensuring users have a unique username and password.
 
 ## Authors:
 Bernard Ekezie & Esther Lam
