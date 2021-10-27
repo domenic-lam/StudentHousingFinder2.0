@@ -3,6 +3,7 @@
 # Project Objective:
 ![Logo](screenshots/SH.png)
 An application that lets users explore a list of student housing.
+
 It will support:
 * CRUD dorm/apartment listings
 * Sort alphabetically and filter by location/building, cost, or by user input
