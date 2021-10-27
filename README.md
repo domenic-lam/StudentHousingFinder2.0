@@ -27,7 +27,7 @@ It will support:
 * CRUD operations on the user and ensuring users have a unique username and password.
 
 ## Authors:
-Bernard Ekezie & Esther Lam
+Bernard Ekezie (https://github.com/bekezie) & Ely (Esther) Lam (https://github.com/ely-lam)
 
 UML Diagram
 ![Logo](screenshots/Project1_UML.png)
