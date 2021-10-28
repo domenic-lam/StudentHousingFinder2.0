@@ -1,5 +1,6 @@
 # StudentHousingFinder
 Link to Business Requirement: https://docs.google.com/document/d/1HfzjBWUDes1UxDi9yob0D4R6YMiWGgLErjpFZMa3-3s/edit
+Link to Functional Dependency: https://docs.google.com/document/d/1NBktMtUlr1iGigkE8cz2e_R3NzSCWksHU_thtI5k96I/edit
 # Project Objective:
 ![Logo](screenshots/SH.png)
 An application that lets users explore a list of student housing.
