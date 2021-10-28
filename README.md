@@ -33,4 +33,4 @@ UML Diagram
 ![Logo](screenshots/Project1_UML.png)
 
 ER Diagram
-![Logo](screenshots/Project1_ERD_edit.png)
+![Logo](screenshots/Project1_ERD.png)
