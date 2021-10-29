@@ -21,5 +21,9 @@
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.4.1"
+  },
+  "dependencies": {
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2"
   }
 }
