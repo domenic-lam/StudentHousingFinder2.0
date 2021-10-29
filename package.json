@@ -1,0 +1,25 @@
+{
+  "name": "StudentHousingFinder",
+  "version": "1.0.0",
+  "description": "An application that lets users explore a list of student housing.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bekezie/StudentHousingFinder.git"
+  },
+  "keywords": [],
+  "author": "Bernard Ekezie and Ely(Esther) Lam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bekezie/StudentHousingFinder/issues"
+  },
+  "homepage": "https://github.com/bekezie/StudentHousingFinder#readme",
+  "devDependencies": {
+    "eslint": "^8.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.4.1"
+  }
+}
