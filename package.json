@@ -1,42 +1,26 @@
 {
-  "name": "StudentHousingFinder",
-  "version": "1.0.0",
-  "description": "An application that lets users explore a list of student housing.",
+  "name": "studenthousingfinder",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./bin/www"
+    "start": "node ./node_modules/nodemon/bin/nodemon.js ./bin/www"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bekezie/StudentHousingFinder.git"
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "^4.16.4",
+    "express-validator": "^6.13.0",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2"
   },
-  "keywords": [],
-  "author": "Bernard Ekezie and Ely(Esther) Lam",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bekezie/StudentHousingFinder/issues"
-  },
-  "homepage": "https://github.com/bekezie/StudentHousingFinder#readme",
   "devDependencies": {
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
     "nodemon": "^2.0.14",
     "prettier": "^2.4.1"
-  },
-  "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "crypto-js": "^4.1.1",
-    "debug": "~2.6.9",
-    "ejs": "^3.1.6",
-    "express": "^4.17.1",
-    "express-session": "^1.17.2",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "mongodb": "^4.1.0",
-    "morgan": "~1.9.1",
-    "passport": "^0.4.1",
-    "passport-local": "^1.0.0",
-    "sqlite": "^4.0.23",
-    "sqlite3": "^5.0.2"
   }
 }

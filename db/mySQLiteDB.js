@@ -20,15 +20,17 @@ const StudentHousingDBController = function () {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
-      users(username, password)
+      User(username, password)
       VALUES (:username, :password)
     `);
     stmt.bind({
-      ":username": newUser.usename,
+      ":username": newUser.username,
       ":password": newUser.password,
     });
-    return await stmt.run();
+    await stmt.run();
   };
+
+  console.log("insert successful");
 
   return studenthousingDB;
 };
