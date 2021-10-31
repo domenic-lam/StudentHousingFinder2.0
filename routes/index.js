@@ -26,27 +26,27 @@ router.post("/listings/create", async function (req, res) {
   console.log("Got post listings/create");
 
   const listing = req.body;
-  console.log("got create listing", listing);
+  console.log("Got create listing", listing);
 
   await listingDB.createListing(listing);
-  console.log("listing created");
+  console.log("Listing created");
 
   res.redirect("/");
 });
 
-// /* GET listing details. */
-// router.get("/listing/:listingID", async function (req, res) {
-//   console.log("Got listing details");
+/* GET listing details. */
+router.get("/listings/:listingID", async function (req, res) {
+  console.log("Got listing details");
 
-//   const listingID = req.params.listingID;
+  const listingID = req.params.listingID;
 
-//   console.log("got listing details ", listingID);
+  console.log("Got listing details ", listingID);
 
-//   const listing = await listingDB.getListingByID(listingID);
+  const listing = await listingDB.getListingByID(listingID);
 
-//   console.log("listing created");
+  console.log("Listing updated");
 
-//   res.render("listingDetails", {listing: listing});
-// });
+  res.render("listingDetails", { listing: listing });
+});
 
 module.exports = router;

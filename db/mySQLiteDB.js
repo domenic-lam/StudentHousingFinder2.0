@@ -68,6 +68,23 @@ async function createListing(newListing) {
   return await stmt.run();
 }
 
+async function getListingByID(listingID) {
+  const db = await connect();
+
+  const stmt = await db.prepare(`SELECT *
+    FROM Listing
+    WHERE
+      listingID = :listingID
+  `);
+
+  stmt.bind({
+    ":listingID": listingID,
+  });
+
+  return await stmt.get();
+}
+
 module.exports = StudentHousingDBController();
 module.exports.createListing = createListing;
 module.exports.getListings = getListings;
+module.exports.getListingByID = getListingByID;
