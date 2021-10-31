@@ -2,11 +2,13 @@ const sqlite3 = require("sqlite3");
 const { open } = require("sqlite");
 async function connect() {
   return open({
-    filename: "./db/studenthousing.db",
+    filename: "./db/housing.db",
     driver: sqlite3.Database,
   });
 }
+
 sqlite3.verbose();
+
 const StudentHousingDBController = function () {
   const studenthousingDB = {};
 
@@ -34,4 +36,5 @@ const StudentHousingDBController = function () {
 
   return studenthousingDB;
 };
+
 module.exports = StudentHousingDBController();

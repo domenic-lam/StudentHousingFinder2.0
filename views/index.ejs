@@ -13,15 +13,126 @@
     />
   </head>
   <body>
-    <nav>
-  
-    </nav>
     <div class="container">
-
+      <nav>
+      </nav>
+      <main class="row">
         <h1>Student Housing</h1>
-        
+        <div class="col-8">
+          <div>
+            <!-- Summary will go here -->
+          </div>
+
+          <!-- List housing summaries with links to further details -->
+          <h2>Listings</h2>
         </div>
-       
+        <!-- /.col-8 -->
+
+        <div class="col-4">
+          <h2>Create Listing</h2>
+
+          <form action="/listings/create" method="POST">
+            <div>
+              <label class="form-label"
+                >Location:
+                <input
+                  class="form-control"
+                  name="location"
+                  type="text"
+                  required
+                />
+              </label>
+            </div>
+            <div>
+              <label class="form-label"
+                >Opening Date:
+                <input
+                  class="form-control"
+                  name="openingDate"
+                  type="date"
+                />
+              </label>
+            </div>
+            <div>
+              <label class="form-label"
+                >Size (Sqft):
+                <input
+                  class="form-control"
+                  name="size"
+                  type="number"
+                  placeholder="250"
+                  required
+                />
+              </label>
+            </div>
+            <div>
+              <label for="unitType" class="form-label"
+                >Choose a unit type:
+                <select class="form-select" id="unitType" name="unitType">
+                  <option value="dorm">Dorm</option>
+                  <option value="apartment">Apartment</option>
+                </select>
+              </label>
+            </div>
+            <div>
+              <label class="form-label"
+                >Offer (Per month):
+                <input
+                  class="form-control"
+                  name="offer"
+                  type="number"
+                  placeholder="1000"
+                />
+              </label>
+            </div>
+            <div>
+              <label class="form-label"
+                >Description:
+                <textarea 
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  rows="4"
+                  placeholder="Please provide a short description of the unit."
+                ></textarea>
+              </label>
+            </div>
+            <div>
+              <label class="form-label"
+                >Lease Term (Months):
+                <input
+                  class="form-control"
+                  name="size"
+                  type="number"
+                  value="6"
+                />
+              </label>
+            </div>
+            <div>
+              <label for="available" class="form-label"
+                >Available:
+                <select class="form-select" id="available" name="available">
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+            </div>
+            <div>
+              <label class="form-label">
+                <input
+                  class="form-control"
+                  name="authorID"
+                  type="hidden"
+                  required
+                />
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+          </form>
+        </div>
+        <!-- /.col-4 -->
+      </main>
     </div>
   </body>
 </html>
