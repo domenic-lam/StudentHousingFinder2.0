@@ -10,9 +10,11 @@ router.get("/", async function (req, res) {
   const listings = await listingDB.getListings();
   console.log("got listings", listings);
 
-  res.render("index", { title: "StudentHousingFinderHome", listings: listings });
+  res.render("index", {
+    title: "StudentHousingFinderHome",
+    listings: listings,
+  });
 });
-
 
 /* GET user registration */
 router.get("/register", function (req, res) {
