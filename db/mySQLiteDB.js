@@ -27,10 +27,123 @@ const StudentHousingDBController = function () {
       ":username": newUser.username,
       ":password": newUser.password,
     });
-    await stmt.run();
+
+    try {
+      await stmt.run();
+      console.log("sign up successful");
+      return 1;
+    } catch (err) {
+      console.log("sign up unsuccessful");
+    }
+
+    return 0;
   };
 
-  console.log("insert successful");
+  // this function will query the database for a user object by using an username string
+  studenthousingDB.getUserByUsername = async (query) => {
+    const db = await connect();
+
+    const stmt = await db.prepare(`SELECT *
+    FROM USER
+    WHERE
+      username = :username
+  `);
+
+    stmt.bind({
+      ":username": query,
+    });
+
+    return await stmt.get();
+  };
+
+  // this function will query the database for a user object by using an username string and password
+  studenthousingDB.getUserCred = async (user) => {
+    const db = await connect();
+
+    console.log(user);
+    const stmt = await db.prepare(`SELECT *
+    FROM USER
+    WHERE
+      username = :username 
+    and
+      password = :password
+      
+  `);
+
+    stmt.bind({
+      ":username": user.username,
+      ":password": user.password,
+    });
+
+    return await stmt.get();
+  };
+
+  /*
+   ***************Student and Owner CRUD OPERATIONS*********************
+   */
+
+  studenthousingDB.saveNewStudent = async function (newStudent) {
+    const db = await connect();
+
+    const stmt = await db.prepare(`INSERT INTO
+      Student(username, firstName, lastName, schoolID, semester, year, budget)
+      VALUES (:username, :firstName, :lastName, :schoolID, :semester, :year, :budget)
+    `);
+    stmt.bind({
+      ":username": newStudent.username,
+      ":firstName": newStudent.firstName,
+      ":lastName": newStudent.lastName,
+      ":schoolID": newStudent.schoolID,
+      ":semester": newStudent.semester,
+      ":year": newStudent.year,
+      ":budget": newStudent.budget,
+    });
+
+    try {
+      await stmt.run();
+      console.log("sign up successful");
+      return 1;
+    } catch (err) {
+      console.log("sign up unsuccessful");
+    }
+
+    return 0;
+  };
+
+  studenthousingDB.saveNewOwner = async function (newOwner) {
+    const db = await connect();
+
+    const stmt = await db.prepare(`INSERT INTO
+      Owner(username, firstName, lastName)
+      VALUES (:username, :firstName, :lastName)
+    `);
+    stmt.bind({
+      ":username": newOwner.username,
+      ":firstName": newOwner.firstName,
+      ":lastName": newOwner.lastName,
+    });
+
+    try {
+      await stmt.run();
+      console.log("sign up successful");
+      return 1;
+    } catch (err) {
+      console.log("sign up unsuccessful");
+    }
+
+    return 0;
+  };
+  /*
+   ***************Listing CRUD OPERATIONS*********************
+   */
+
+  studenthousingDB.getListings = async () => {
+    const db = await connect();
+
+    return await db.all(
+      "SELECT * FROM Listing ORDER BY listingId DESC LIMIT 20"
+    );
+  };
 
   return studenthousingDB;
 };
