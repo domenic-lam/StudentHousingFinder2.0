@@ -4,25 +4,76 @@ let studenthousingDB = require("../db/mySQLiteDB.js");
 
 const listingDB = require("../db/mySqliteDB.js");
 
+// save a session for app
+let session;
+
 /* GET home page. */
 router.get("/", async function (req, res) {
   console.log("Got request for /");
 
-  let user = req.flash("user");
-  req.flash(req.flash("user"));
-  // if (user == "") {
-  //   res.redirect("/register");
-  // }
-
-  console.log("got user " + user);
   const listings = await studenthousingDB.getListings();
-  // console.log("got listings", listings);
+  console.log("got listings");
 
-  res.render("index", {
-    title: "StudentHousingFinderHome",
-    listings: listings,
-    user: user,
-  });
+  session = req.session;
+  if (session.userid) {
+    console.log("got user " + session.userid);
+    res.render("index", {
+      title: "StudentHousingFinderHome",
+      listings: listings,
+    });
+  } else
+    res.render("index", {
+      title: "StudentHousingFinderHome",
+      listings: listings,
+    });
+});
+
+// After user logs in, render page depending on owner/student status
+router.post("/user", async function (req, res) {
+  console.log("Got request for /user");
+
+  // let user = req.flash("user");
+  // req.flash(req.flash("user"));
+  // // if (user == "") {
+  // //   res.redirect("/register");
+  // // }
+  // console.log("got user " + user);
+
+  const listings = await studenthousingDB.getListings();
+  console.log("got listings");
+  const user = await studenthousingDB.getUserByUsername(req.body.username);
+  console.log("got user", user);
+  console.log("got user pass", String(user.password));
+  console.log("got pass from input", String(req.body.password));
+  const owner = await studenthousingDB.getOwnerByUsername(user);
+  console.log("isOwner?", owner);
+  // const student = await studenthousingDB.getOwnerByUsername(user);
+
+  if (req.body.password == user.password) {
+    session = req.session;
+    session.userid = req.body.username;
+    console.log(req.session);
+    if (owner != undefined) {
+      res.render("ownerView", {
+        title: "StudentHousingFinderOwnerHome",
+        listings: listings,
+      });
+    } else {
+      res.render("studentView", {
+        // need to create studentView
+        title: "StudentHousingFinderStudentHome",
+        listings: listings,
+      });
+    }
+  } else {
+    res.send("Invalid username or password");
+  }
+});
+
+// logout does not work yet
+router.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
 });
 
 router.get("/register", function (req, res) {

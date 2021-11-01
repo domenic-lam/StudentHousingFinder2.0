@@ -19,7 +19,7 @@ const StudentHousingDBController = function () {
   const studenthousingDB = {};
 
   //this function will save a new user to the database
-  studenthousingDB.saveNewUser = async function (newUser) {
+  studenthousingDB.createNewUser = async function (newUser) {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
@@ -34,12 +34,9 @@ const StudentHousingDBController = function () {
     try {
       await stmt.run();
       console.log("sign up successful");
-      return 1;
     } catch (err) {
       console.log("sign up unsuccessful");
     }
-
-    return 0;
   };
 
   // this function will query the database for a user object by using an username string
@@ -85,7 +82,7 @@ const StudentHousingDBController = function () {
    ***************Student and Owner CRUD OPERATIONS*********************
    */
 
-  studenthousingDB.saveNewStudent = async function (newStudent) {
+  studenthousingDB.createNewStudent = async function (newStudent) {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
@@ -105,15 +102,12 @@ const StudentHousingDBController = function () {
     try {
       await stmt.run();
       console.log("sign up successful");
-      return 1;
     } catch (err) {
       console.log("sign up unsuccessful");
     }
-
-    return 0;
   };
 
-  studenthousingDB.saveNewOwner = async function (newOwner) {
+  studenthousingDB.createNewOwner = async function (newOwner) {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
@@ -129,17 +123,54 @@ const StudentHousingDBController = function () {
     try {
       await stmt.run();
       console.log("sign up successful");
-      return 1;
     } catch (err) {
       console.log("sign up unsuccessful");
     }
-
-    return 0;
   };
+
+  studenthousingDB.getOwnerByUsername = async ownerID => {
+    const db = await connect();
+
+    const stmt = await db.prepare(`SELECT *
+    FROM Owner
+    WHERE
+      username = :username
+    `);
+    stmt.bind({
+      ":username": ownerID.username,
+    });
+
+    return await stmt.get();
+  };
+
   /*
    ***************Listing CRUD OPERATIONS*********************
    */
+  // create new Listing
+  studenthousingDB.createListing = async newListing => {
+    const db = await connect();
 
+    const stmt = await db.prepare(`INSERT INTO
+    Listing(location, openingDate, size, unitType, offer, description, leaseInMonths, available)
+    VALUES (:location, :openingDate, :size, :unitType, :offer, :description, :leaseInMonths, :available)
+  `);
+
+    stmt.bind({
+      ":location": newListing.location,
+      ":openingDate": newListing.openingDate,
+      ":size": newListing.size,
+      ":unitType": newListing.unitType,
+      ":offer": newListing.offer,
+      ":description": newListing.description,
+      ":leaseInMonths": newListing.leaseInMonths,
+      ":available": newListing.available,
+      ":authorID": 1,
+    });
+
+    return await stmt.run();
+  };
+
+  // get all Listings , may implement pagination later
   studenthousingDB.getListings = async () => {
     const db = await connect();
 
@@ -148,141 +179,87 @@ const StudentHousingDBController = function () {
     );
   };
 
-  return studenthousingDB;
-};
+  // read selected Listing info
+  studenthousingDB.getListingByID = async listingID => {
+    const db = await connect();
 
-//this function will retrieve user info from the database
-async function getUserByUsername(username) {
-  const db = await connect();
-
-  const stmt = await db.prepare(`SELECT *
-    FROM User
-    WHERE
-      username = :username
-  `);
-
-  stmt.bind({
-    ":username": username,
-  });
-
-  return await stmt.get();
-}
-
-/*
- ***************LISTING CRUD OPERATIONS*********************
- */
-
-async function getListings() {
-  const db = await connect();
-
-  return await db.all("SELECT * FROM Listing ORDER BY listingID DESC LIMIT 20");
-}
-
-async function createListing(newListing) {
-  const db = await connect();
-
-  const stmt = await db.prepare(`INSERT INTO
-    Listing(location, openingDate, size, unitType, offer, description, leaseInMonths, available)
-    VALUES (:location, :openingDate, :size, :unitType, :offer, :description, :leaseInMonths, :available)
-  `);
-
-  stmt.bind({
-    ":location": newListing.location,
-    ":openingDate": newListing.openingDate,
-    ":size": newListing.size,
-    ":unitType": newListing.unitType,
-    ":offer": newListing.offer,
-    ":description": newListing.description,
-    ":leaseInMonths": newListing.leaseInMonths,
-    ":available": newListing.available,
-    ":authorID": 1,
-  });
-
-  return await stmt.run();
-}
-
-async function getListingByID(listingID) {
-  const db = await connect();
-
-  const stmt = await db.prepare(`SELECT *
+    const stmt = await db.prepare(`SELECT *
     FROM Listing
     WHERE
       listingID = :listingID
   `);
 
-  stmt.bind({
-    ":listingID": listingID,
-  });
+    stmt.bind({
+      ":listingID": listingID,
+    });
 
-  return await stmt.get();
-}
+    return await stmt.get();
+  };
 
-async function updateListing(listingToUpdate) {
-  const db = await connect();
+  // update Listing info
+  studenthousingDB.updateListing = async listingToUpdate => {
+    const db = await connect();
 
-  const stmt = await db.prepare(`UPDATE Listing
+    const stmt = await db.prepare(`UPDATE Listing
     SET location = :location, openingDate = :openingDate, size = :size, unitType = :unitType, offer = :offer, description = :description, leaseInMonths = :leaseInMonths, available = :available
     WHERE listingID = :theIDToUpdate
   `);
 
-  stmt.bind({
-    ":theIDToUpdate": listingToUpdate.listingID,
-    ":location": listingToUpdate.location,
-    ":openingDate": listingToUpdate.openingDate,
-    ":size": listingToUpdate.size,
-    ":unitType": listingToUpdate.unitType,
-    ":offer": listingToUpdate.offer,
-    ":description": listingToUpdate.description,
-    ":leaseInMonths": listingToUpdate.leaseInMonths,
-    ":available": listingToUpdate.available,
-  });
+    stmt.bind({
+      ":theIDToUpdate": listingToUpdate.listingID,
+      ":location": listingToUpdate.location,
+      ":openingDate": listingToUpdate.openingDate,
+      ":size": listingToUpdate.size,
+      ":unitType": listingToUpdate.unitType,
+      ":offer": listingToUpdate.offer,
+      ":description": listingToUpdate.description,
+      ":leaseInMonths": listingToUpdate.leaseInMonths,
+      ":available": listingToUpdate.available,
+    });
 
-  return await stmt.run();
-}
+    return await stmt.run();
+  };
 
-async function deleteListing(listingToDelete) {
-  const db = await connect();
+  // delete Listing
+  studenthousingDB.deleteListing = async listingToDelete => {
+    const db = await connect();
 
-  const stmt = await db.prepare(`DELETE FROM
+    const stmt = await db.prepare(`DELETE FROM
     Listing
     WHERE listingID = :theIDToDelete
   `);
 
-  stmt.bind({
-    ":theIDToDelete": listingToDelete.listingID,
-  });
+    stmt.bind({
+      ":theIDToDelete": listingToDelete.listingID,
+    });
 
-  return await stmt.run();
-}
+    return await stmt.run();
+  };
 
-/*
- ***************MESSAGE CRUD OPERATIONS*********************
- */
+  /*
+   ***************MESSAGE CRUD OPERATIONS*********************
+   */
 
-// async function createMessage(newMessage) {
-//   const db = await connect();
+  // async function createMessage(newMessage) {
+  //   const db = await connect();
 
-//   const stmt = await db.prepare(`INSERT INTO
-//     Message (messageID, sender, receiver, time, message)
-//     VALUES (:messageID, :sender, :receiver, :time, :message)
-//   `);
+  //   const stmt = await db.prepare(`INSERT INTO
+  //     Message (messageID, sender, receiver, time, message)
+  //     VALUES (:messageID, :sender, :receiver, :time, :message)
+  //   `);
 
-//   stmt.bind({
-//     ":messageID": newMessage.messageID,
-//     ":sender": newMessage.sender,
-//     ":receiver": newMessage.receiver,
-//     ":time": newMessage.time,
-//     ":message": newMessage.message,
-//   });
+  //   stmt.bind({
+  //     ":messageID": newMessage.messageID,
+  //     ":sender": newMessage.sender,
+  //     ":receiver": newMessage.receiver,
+  //     ":time": newMessage.time,
+  //     ":message": newMessage.message,
+  //   });
 
-//   return await stmt.run();
-// }
+  //   return await stmt.run();
+  // }
+
+  return studenthousingDB;
+};
 
 module.exports = StudentHousingDBController();
-module.exports.getUserByUsername = getUserByUsername;
-module.exports.createListing = createListing;
-module.exports.getListings = getListings;
-module.exports.getListingByID = getListingByID;
-module.exports.updateListing = updateListing;
-module.exports.deleteListing = deleteListing;
-// module.exports.createMessage = createMessage;
