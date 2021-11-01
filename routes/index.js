@@ -81,6 +81,19 @@ router.get("/listings/:listingID", async function (req, res) {
   res.render("listingDetails", { listing: listing });
 });
 
+/* POST update listing. */
+router.post("/listings/update", async function (req, res) {
+  console.log("Got post listings/create");
+
+  const listing = req.body;
+  console.log("Got create listing", listing);
+
+  await listingDB.updateListing(listing);
+  console.log("Listing updated");
+
+  res.redirect("/");
+});
+
 /* POST delete listing. */
 router.post("/listings/delete", async function (req, res) {
   console.log("POST delete listing");

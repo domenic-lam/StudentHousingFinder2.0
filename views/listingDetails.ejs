@@ -36,7 +36,7 @@
             <div>
               <input
                 class="form-control"
-                name="location"
+                name="listingID"
                 type="hidden"
                 value="<%= listing.listingID %>"
               />
@@ -110,9 +110,7 @@
                   id="description"
                   name="description"
                   rows="4"
-                  placeholder="Please provide a short description of the unit."
-                  value="<%= listing.description %>"
-                ></textarea>
+                ><%= listing.description %></textarea>
               </label>
             </div>
             <div>

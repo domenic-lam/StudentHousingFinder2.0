@@ -43,7 +43,7 @@ const StudentHousingDBController = function () {
   };
 
   // this function will query the database for a user object by using an username string
-  studenthousingDB.getUserByUsername = async (query) => {
+  studenthousingDB.getUserByUsername = async query => {
     const db = await connect();
 
     const stmt = await db.prepare(`SELECT *
@@ -60,7 +60,7 @@ const StudentHousingDBController = function () {
   };
 
   // this function will query the database for a user object by using an username string and password
-  studenthousingDB.getUserCred = async (user) => {
+  studenthousingDB.getUserCred = async user => {
     const db = await connect();
 
     console.log(user);
@@ -182,8 +182,8 @@ async function createListing(newListing) {
   const db = await connect();
 
   const stmt = await db.prepare(`INSERT INTO
-    Listing(location, openingDate, size, unitType, offer, description, leaseInMonths, available, authorID)
-    VALUES (:location, :openingDate, :size, :unitType, :offer, :description, :leaseInMonths, :available, :authorID)
+    Listing(location, openingDate, size, unitType, offer, description, leaseInMonths, available)
+    VALUES (:location, :openingDate, :size, :unitType, :offer, :description, :leaseInMonths, :available)
   `);
 
   stmt.bind({
@@ -195,7 +195,7 @@ async function createListing(newListing) {
     ":description": newListing.description,
     ":leaseInMonths": newListing.leaseInMonths,
     ":available": newListing.available,
-    ":authorID": newListing.authorID,
+    ":authorID": 1,
   });
 
   return await stmt.run();
@@ -215,6 +215,29 @@ async function getListingByID(listingID) {
   });
 
   return await stmt.get();
+}
+
+async function updateListing(listingToUpdate) {
+  const db = await connect();
+
+  const stmt = await db.prepare(`UPDATE Listing
+    SET location = :location, openingDate = :openingDate, size = :size, unitType = :unitType, offer = :offer, description = :description, leaseInMonths = :leaseInMonths, available = :available
+    WHERE listingID = :theIDToUpdate
+  `);
+
+  stmt.bind({
+    ":theIDToUpdate": listingToUpdate.listingID,
+    ":location": listingToUpdate.location,
+    ":openingDate": listingToUpdate.openingDate,
+    ":size": listingToUpdate.size,
+    ":unitType": listingToUpdate.unitType,
+    ":offer": listingToUpdate.offer,
+    ":description": listingToUpdate.description,
+    ":leaseInMonths": listingToUpdate.leaseInMonths,
+    ":available": listingToUpdate.available,
+  });
+
+  return await stmt.run();
 }
 
 async function deleteListing(listingToDelete) {
@@ -260,5 +283,6 @@ module.exports.getUserByUsername = getUserByUsername;
 module.exports.createListing = createListing;
 module.exports.getListings = getListings;
 module.exports.getListingByID = getListingByID;
+module.exports.updateListing = updateListing;
 module.exports.deleteListing = deleteListing;
 // module.exports.createMessage = createMessage;
