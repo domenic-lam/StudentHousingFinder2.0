@@ -1,24 +1,34 @@
 let express = require("express");
 let router = express.Router();
+let studenthousingDB = require("../db/mySQLiteDB.js");
 
 const listingDB = require("../db/mySqliteDB.js");
 
 /* GET home page. */
 router.get("/", async function (req, res) {
   console.log("Got request for /");
+  
+  let user = req.flash("user");
+  req.flash(req.flash("user"));
+  // if (user == "") {
+  //   res.redirect("/register");
+  // }
 
-  const listings = await listingDB.getListings();
+  console.log("got user " + user);
+  const listings = await studenthousingDB.getListings();
   console.log("got listings", listings);
 
-  res.render("index", {
-    title: "StudentHousingFinderHome",
-    listings: listings,
-  });
+  res.render("index", { title: "StudentHousingFinderHome", listings: listings, user: user });
 });
 
-/* GET user registration */
 router.get("/register", function (req, res) {
-  res.render("register", { title: "Register" });
+  res.render("register");
+});
+router.get("/owner", function (req, res) {
+  res.render("owner");
+});
+router.get("/student", function (req, res) {
+  res.render("student");
 });
 
 /* POST create listing. */
