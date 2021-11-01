@@ -11,15 +11,14 @@ async function connect() {
   });
 }
 
+/*
+ ***************USER CRUD OPERATIONS*********************
+ */
+
 const StudentHousingDBController = function () {
   const studenthousingDB = {};
 
-  /*
-   ***************USER CRUD OPERATIONS*********************
-   */
-
   //this function will save a new user to the database
-
   studenthousingDB.saveNewUser = async function (newUser) {
     const db = await connect();
 
@@ -152,6 +151,27 @@ const StudentHousingDBController = function () {
   return studenthousingDB;
 };
 
+//this function will retrieve user info from the database
+async function getUserByUsername(username) {
+  const db = await connect();
+
+  const stmt = await db.prepare(`SELECT *
+    FROM User
+    WHERE
+      username = :username
+  `);
+
+  stmt.bind({
+    ":username": username,
+  });
+
+  return await stmt.get();
+}
+
+/*
+ ***************LISTING CRUD OPERATIONS*********************
+ */
+
 async function getListings() {
   const db = await connect();
 
@@ -197,7 +217,48 @@ async function getListingByID(listingID) {
   return await stmt.get();
 }
 
+async function deleteListing(listingToDelete) {
+  const db = await connect();
+
+  const stmt = await db.prepare(`DELETE FROM
+    Listing
+    WHERE listingID = :theIDToDelete
+  `);
+
+  stmt.bind({
+    ":theIDToDelete": listingToDelete.listingID,
+  });
+
+  return await stmt.run();
+}
+
+/*
+ ***************MESSAGE CRUD OPERATIONS*********************
+ */
+
+// async function createMessage(newMessage) {
+//   const db = await connect();
+
+//   const stmt = await db.prepare(`INSERT INTO
+//     Message (messageID, sender, receiver, time, message)
+//     VALUES (:messageID, :sender, :receiver, :time, :message)
+//   `);
+
+//   stmt.bind({
+//     ":messageID": newMessage.messageID,
+//     ":sender": newMessage.sender,
+//     ":receiver": newMessage.receiver,
+//     ":time": newMessage.time,
+//     ":message": newMessage.message,
+//   });
+
+//   return await stmt.run();
+// }
+
 module.exports = StudentHousingDBController();
+module.exports.getUserByUsername = getUserByUsername;
 module.exports.createListing = createListing;
 module.exports.getListings = getListings;
 module.exports.getListingByID = getListingByID;
+module.exports.deleteListing = deleteListing;
+// module.exports.createMessage = createMessage;

@@ -14,9 +14,23 @@
   </head>
   <body>
     <div class="container">
-      <nav></nav>
+      <!-- Navigation Bar -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Student Housing</a>
+          <!-- Use to potentially implement user sign in -->
+          <!--           <script type="text/javascript">
+            if(document.getElementById("username")!="") {
+              document.write("<span id='username'></span>")
+            } else {
+              document.write("<a class='btn btn-primary' href='/register' role='button'>Sign Up/Sign In</a>")
+            }
+          </script> -->
+        </div>
+      </nav>
+      <!-- End navigation bar -->
+
       <main class="row">
-        <h1>Student Housing</h1>
         <div class="col-8">
           <form action="/listings/update" method="POST">
             <div>
@@ -45,7 +59,8 @@
                 <input
                   class="form-control"
                   name="openingDate"
-                  type="date"
+                  type="text"
+                  placeholder="MM/DD/YYYY"
                   value="<%= listing.openingDate %>"
                 />
               </label>
@@ -67,7 +82,9 @@
               <label for="unitType" class="form-label"
                 >Choose a unit type:
                 <select class="form-select" id="unitType" name="unitType">
-                  <option value="<%= listing.unitType %>" selected><%= listing.unitType %></option>
+                  <option value="<%= listing.unitType %>" selected>
+                    <%= listing.unitType %>
+                  </option>
                   <option value="dorm">Dorm</option>
                   <option value="apartment">Apartment</option>
                 </select>
@@ -136,7 +153,38 @@
           </form>
         </div>
         <!-- /.col-8 -->
+
+        <div class="col-4">
+          <form action="/message/send" method="POST">
+            <div>
+              <label class="form-label"
+                >Message the owner:
+                <textarea
+                  class="form-control"
+                  id="message"
+                  name="message"
+                  rows="4"
+                  placeholder="Hi, I am interested in this unit."
+                ></textarea>
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </form>
+        </div>
       </main>
     </div>
+    <script language="JavaScript">
+      function processUser() {
+        var parameters = location.search.substring(1).split("&");
+
+        var temp = parameters[0].split("=");
+        username = unescape(temp[1]);
+        temp = parameters[1].split("=");
+        password = unescape(temp[1]);
+        document.getElementById("username").innerHTML = username;
+        document.getElementById("password").innerHTML = password;
+      }
+      processUser();
+    </script>
   </body>
 </html>
