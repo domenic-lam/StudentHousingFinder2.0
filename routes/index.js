@@ -16,7 +16,7 @@ router.get("/", async function (req, res) {
 
   console.log("got user " + user);
   const listings = await studenthousingDB.getListings();
-  console.log("got listings", listings);
+  // console.log("got listings", listings);
 
   res.render("index", {
     title: "StudentHousingFinderHome",
@@ -83,10 +83,10 @@ router.get("/listings/:listingID", async function (req, res) {
 
 /* POST update listing. */
 router.post("/listings/update", async function (req, res) {
-  console.log("Got post listings/create");
+  console.log("POST listings/update");
 
   const listing = req.body;
-  console.log("Got create listing", listing);
+  // console.log("POST update listing", listing);
 
   await listingDB.updateListing(listing);
   console.log("Listing updated");
@@ -100,7 +100,7 @@ router.post("/listings/delete", async function (req, res) {
 
   const listing = req.body;
 
-  console.log("got delete listing", listing);
+  // console.log("got delete listing", listing);
 
   await listingDB.deleteListing(listing);
 

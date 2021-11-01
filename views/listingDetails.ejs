@@ -80,11 +80,8 @@
             </div>
             <div>
               <label for="unitType" class="form-label"
-                >Choose a unit type:
+                >Unit type:
                 <select class="form-select" id="unitType" name="unitType">
-                  <option value="<%= listing.unitType %>" selected>
-                    <%= listing.unitType %>
-                  </option>
                   <option value="dorm">Dorm</option>
                   <option value="apartment">Apartment</option>
                 </select>
@@ -110,7 +107,8 @@
                   id="description"
                   name="description"
                   rows="4"
-                ><%= listing.description %></textarea>
+                ><%= listing.description %></textarea
+                >
               </label>
             </div>
             <div>
@@ -118,10 +116,10 @@
                 >Lease Term (Months):
                 <input
                   class="form-control"
-                  name="size"
+                  name="leaseInMonths"
                   type="number"
                   placeholder="6"
-                  value="<%= listing.offer %>"
+                  value="<%= listing.leaseInMonths %>"
                 />
               </label>
             </div>
