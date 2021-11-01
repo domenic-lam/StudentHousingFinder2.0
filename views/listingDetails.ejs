@@ -42,7 +42,12 @@
             <div>
               <label class="form-label"
                 >Opening Date:
-                <input class="form-control" name="openingDate" type="date" />
+                <input
+                  class="form-control"
+                  name="openingDate"
+                  type="date"
+                  value="<%= listing.openingDate %>"
+                />
               </label>
             </div>
             <div>
@@ -62,7 +67,7 @@
               <label for="unitType" class="form-label"
                 >Choose a unit type:
                 <select class="form-select" id="unitType" name="unitType">
-                  <option selected value="<%= listing.unitType %>"></option>
+                  <option value="<%= listing.unitType %>" selected><%= listing.unitType %></option>
                   <option value="dorm">Dorm</option>
                   <option value="apartment">Apartment</option>
                 </select>
@@ -109,7 +114,6 @@
               <label for="available" class="form-label"
                 >Available:
                 <select class="form-select" id="available" name="available">
-                  <option selected value="<%= listing.available %>"></option>
                   <option value="TRUE">Yes</option>
                   <option value="FALSE">No</option>
                 </select>
