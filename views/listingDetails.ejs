@@ -18,14 +18,6 @@
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">Student Housing</a>
-          <!-- Use to potentially implement user sign in -->
-          <!--           <script type="text/javascript">
-            if(document.getElementById("username")!="") {
-              document.write("<span id='username'></span>")
-            } else {
-              document.write("<a class='btn btn-primary' href='/register' role='button'>Sign Up/Sign In</a>")
-            }
-          </script> -->
         </div>
       </nav>
       <!-- End navigation bar -->
@@ -107,7 +99,8 @@
                   id="description"
                   name="description"
                   rows="4"
-                ><%= listing.description %></textarea
+                >
+                <%= listing.description %></textarea
                 >
               </label>
             </div>
