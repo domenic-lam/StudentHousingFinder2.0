@@ -19,7 +19,7 @@ const StudentHousingDBController = function () {
   const studenthousingDB = {};
 
   //this function will save a new user to the database
-  studenthousingDB.createNewUser = async function (newUser) {
+  studenthousingDB.createNewUser = async newUser => {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
@@ -47,7 +47,7 @@ const StudentHousingDBController = function () {
     FROM USER
     WHERE
       username = :username
-  `);
+    `);
 
     stmt.bind({
       ":username": query,
@@ -162,12 +162,12 @@ const StudentHousingDBController = function () {
    ***************Listing CRUD OPERATIONS*********************
    */
   // create new Listing
-  studenthousingDB.createListing = async newListing => {
+  studenthousingDB.createListing = async (newListing, authorID) => {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
-    Listing(location, openingDate, size, unitType, offer, description, leaseInMonths, available)
-    VALUES (:location, :openingDate, :size, :unitType, :offer, :description, :leaseInMonths, :available)
+    Listing(location, openingDate, size, unitType, offer, description, leaseInMonths, available, authorID)
+    VALUES (:location, :openingDate, :size, :unitType, :offer, :description, :leaseInMonths, :available, :authorID)
   `);
 
     stmt.bind({
@@ -179,7 +179,7 @@ const StudentHousingDBController = function () {
       ":description": newListing.description,
       ":leaseInMonths": newListing.leaseInMonths,
       ":available": newListing.available,
-      ":authorID": 1,
+      ":authorID": authorID,
     });
 
     return await stmt.run();
