@@ -13,7 +13,6 @@ router.get("/", async function (req, res) {
 
   const listings = await studenthousingDB.getListings();
   console.log("got listings");
-
   session = req.session;
   if (session.userid) {
     console.log("got user " + session.userid);
@@ -30,7 +29,7 @@ router.get("/", async function (req, res) {
 
 // After user logs in, render page depending on owner/student status
 router.post("/user", async function (req, res) {
-  console.log("Got request for /user");
+  console.log("POST /user");
 
   // let user = req.flash("user");
   // req.flash(req.flash("user"));
@@ -44,12 +43,12 @@ router.post("/user", async function (req, res) {
   const user = await studenthousingDB.getUserByUsername(req.body.username);
   console.log("got user", user);
   const owner = await studenthousingDB.getOwnerByUsername(user);
+  console.log("got owner", owner);
   // const student = await studenthousingDB.getOwnerByUsername(user);
 
   if (req.body.password == user.password) {
     session = req.session;
     session.userid = req.body.username;
-    console.log("req.session: ", req.session);
     if (owner != undefined) {
       res.render("ownerView", {
         title: "StudentHousingFinderOwnerHome",
@@ -69,7 +68,6 @@ router.post("/user", async function (req, res) {
   }
 });
 
-// logout does not work yet
 router.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
@@ -78,6 +76,7 @@ router.get("/logout", (req, res) => {
 router.get("/register", function (req, res) {
   res.render("register");
 });
+
 router.get("/owner", function (req, res) {
   res.render("owner");
 });
@@ -85,22 +84,26 @@ router.get("/student", function (req, res) {
   res.render("student");
 });
 
-/* GET user registration */
-router.get("/signin", function (req, res) {
-  res.render("signin", { title: "Sign In" });
-});
-
 /* POST create listing. */
 router.post("/listings/create", async function (req, res) {
-  console.log("Got post listings/create");
+  console.log("POST listings/create");
+
+  const user = await studenthousingDB.getUserByUsername(session.userid);
+  console.log("got user", user);
+  const owner = await studenthousingDB.getOwnerByUsername(user);
+  console.log("got owner", owner);
 
   const listing = req.body;
+  const authorID = owner.authorID;
   console.log("Got create listing", listing);
+  session = req.session;
+  session.userid = req.body.username;
+  console.log("req.session: ", req.session);
 
-  await listingDB.createListing(listing);
+  await listingDB.createListing(listing, authorID);
   console.log("Listing created");
 
-  res.redirect("/");
+  res.redirect("/user");
 });
 
 /* POST send message. */
@@ -127,6 +130,19 @@ router.get("/listings/:listingID", async function (req, res) {
   const listing = await listingDB.getListingByID(listingID);
 
   console.log("Listing updated");
+
+  res.render("listingDetails", { listing: listing });
+});
+
+/* Update listing details. */
+router.get("/listings/:listingID", async function (req, res) {
+  console.log("Got listing details");
+
+  const listingID = req.params.listingID;
+
+  console.log("Got listing details ", listingID);
+
+  const listing = await listingDB.getListingByID(listingID);
 
   res.render("listingDetails", { listing: listing });
 });
