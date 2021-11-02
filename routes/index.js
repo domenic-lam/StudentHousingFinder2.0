@@ -43,30 +43,29 @@ router.post("/user", async function (req, res) {
   console.log("got listings");
   const user = await studenthousingDB.getUserByUsername(req.body.username);
   console.log("got user", user);
-  console.log("got user pass", String(user.password));
-  console.log("got pass from input", String(req.body.password));
   const owner = await studenthousingDB.getOwnerByUsername(user);
-  console.log("isOwner?", owner);
   // const student = await studenthousingDB.getOwnerByUsername(user);
 
   if (req.body.password == user.password) {
     session = req.session;
     session.userid = req.body.username;
-    console.log(req.session);
+    console.log("req.session: ", req.session);
     if (owner != undefined) {
       res.render("ownerView", {
         title: "StudentHousingFinderOwnerHome",
         listings: listings,
       });
+      console.log("owner session: ", req.session);
     } else {
       res.render("studentView", {
         // need to create studentView
         title: "StudentHousingFinderStudentHome",
         listings: listings,
       });
+      console.log("student session: ", req.session);
     }
   } else {
-    res.send("Invalid username or password");
+    res.redirect("/");
   }
 });
 

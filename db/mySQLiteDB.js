@@ -143,6 +143,21 @@ const StudentHousingDBController = function () {
     return await stmt.get();
   };
 
+  studenthousingDB.getStudentByUsername = async studentID => {
+    const db = await connect();
+
+    const stmt = await db.prepare(`SELECT *
+    FROM Student
+    WHERE
+      username = :username
+    `);
+    stmt.bind({
+      ":username": studentID.username,
+    });
+
+    return await stmt.get();
+  };
+
   /*
    ***************Listing CRUD OPERATIONS*********************
    */
