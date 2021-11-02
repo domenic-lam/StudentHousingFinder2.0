@@ -78,10 +78,10 @@ router.get("/register", function (req, res) {
 });
 
 router.get("/owner", function (req, res) {
-  res.render("owner");
+  res.render("ownerRegister");
 });
 router.get("/student", function (req, res) {
-  res.render("student");
+  res.render("studentRegister");
 });
 
 /* POST create listing. */
