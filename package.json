@@ -21,6 +21,7 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "ejs-lint": "^1.2.1",
     "eslint": "^8.1.0",
     "eslint-config-prettier": "^8.3.0",
     "nodemon": "^2.0.14",

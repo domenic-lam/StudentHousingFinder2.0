@@ -1,104 +1,247 @@
 let express = require("express");
 let router = express.Router();
-let studenthousingDB = require("../db/mySQLiteDB.js");
-
-const listingDB = require("../db/mySqliteDB.js");
+let studentHousingDB = require("../db/mySQLiteDB.js");
 
 // save a session for app
 let session;
 
 /* GET home page. */
 router.get("/", async function (req, res) {
-  console.log("Got request for /");
+  console.log("Attempting GET /");
 
-  const listings = await studenthousingDB.getListings();
-  //const rating = await studenthousingDB.getRatings();
+  const listings = await studentHousingDB.getListings();
+  console.log("got listings");
 
   session = req.session;
+
   if (session.userid) {
-    console.log("got user " + session.userid);
-    res.render("index", {
-      title: "StudentHousingFinderHome",
-      listings: listings,
-    });
-  } else
-    res.render("index", {
-      title: "StudentHousingFinderHome",
-      listings: listings,
-    });
-});
+    console.log("got session " + session.userid);
 
-// After user logs in, render page depending on owner/student status
-router.post("/user", async function (req, res) {
-  console.log("Got request for /user");
+    const username = await studentHousingDB.getUserByUsername(session.userid);
+    console.log("got user", username);
+    const owner = await studentHousingDB.getOwnerByUsername(username);
+    console.log("got owner", owner);
 
-  // let user = req.flash("user");
-  // req.flash(req.flash("user"));
-  // // if (user == "") {
-  // //   res.redirect("/register");
-  // // }
-  // console.log("got user " + user);
-
-  const listings = await studenthousingDB.getListings();
-  console.log("got listings");
-  const user = await studenthousingDB.getUserByUsername(req.body.username);
-  console.log("got user", user);
-  const owner = await studenthousingDB.getOwnerByUsername(user);
-  // const student = await studenthousingDB.getOwnerByUsername(user);
-
-  if (req.body.password == user.password) {
-    session = req.session;
-    session.userid = req.body.username;
-    console.log("req.session: ", req.session);
     if (owner != undefined) {
-      res.render("ownerView", {
+      const authorID = owner.authorID;
+      console.log("owner session: ", req.session);
+      // res.redirect("/ownerHome");
+      res.render("ownerHome", {
         title: "StudentHousingFinderOwnerHome",
         listings: listings,
+        username: username,
+        authorID: authorID,
       });
-      console.log("owner session: ", req.session);
     } else {
-      res.render("studentView", {
-        // need to create studentView
+      console.log(listings);
+      const student = await studentHousingDB.getStudentByUsername(username);
+      console.log("got student", student);
+      //console.log("hello " + listings.rating);
+      res.render("studentHome", {
         title: "StudentHousingFinderStudentHome",
         listings: listings,
+        username: username,
       });
       console.log("student session: ", req.session);
     }
   } else {
+    res.render("index", {
+      title: "StudentHousingFinderHome",
+      listings: listings,
+    });
+  }
+});
+
+// After user logs in, render page depending on owner/student status
+router.post("/user", async function (req, res) {
+  console.log("**attempting POST /user");
+
+  const listings = await studentHousingDB.getListings();
+  console.log("got listings");
+  session = req.session;
+  session.userid = req.body.username;
+
+  const username = await studentHousingDB.getUserByUsername(session.userid);
+  console.log("got user", username);
+  const owner = await studentHousingDB.getOwnerByUsername(username);
+  console.log("got owner", owner);
+  // const student = await studentHousingDB.getOwnerByUsername(user);
+
+  if (req.body.password == username.password) {
     res.redirect("/");
   }
 });
 
-// logout does not work yet
+/* GET logout. */
 router.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
 
+/* GET register. */
 router.get("/register", function (req, res) {
   res.render("register");
 });
+
+/* GET ownerRegister. */
 router.get("/owner", function (req, res) {
-  res.render("owner");
+  res.render("ownerRegister");
 });
+
+/* GET studentRegister. */
 router.get("/student", function (req, res) {
-  res.render("student");
+  res.render("studentRegister");
 });
 
-/* GET user registration */
-router.get("/signin", function (req, res) {
-  res.render("signin", { title: "Sign In" });
+/* GET studentHome. */
+router.get("/studentHome", function (req, res) {
+  res.render("studentHome");
 });
 
-/* POST create listing. */
+/* POST create rating. */
 router.post("/listings/create", async function (req, res) {
-  console.log("Got post listings/create");
+  console.log("**attempting POST listings/create");
 
   const listing = req.body;
-  console.log("Got create listing", listing);
+  // console.log("create listing", listing);
+  // const username = await studentHousingDB.getUserByUsername(session.userid);
+  // // console.log("got user", username);
+  // const owner = await studentHousingDB.getOwnerByUsername(username);
+  // // console.log("got owner", owner);
+  // const authorID = owner.authorID;
 
-  await listingDB.createListing(listing);
-  console.log("Listing created");
+  try {
+    await studentHousingDB.createListing(listing);
+    console.log("Listing created");
+  } catch (err) {
+    console.log("Listing not created");
+  }
+
+  session = req.session;
+
+  res.redirect("/");
+});
+
+/* POST create rating. */
+router.post("/createRating", async function (req, res) {
+  console.log("**attempting POST createRating");
+  session = req.session;
+
+  const rating = {
+    rating: req.body.rating,
+    listingID: req.body.listingID,
+    user: session.userid,
+  };
+
+  console.log(rating);
+  // console.log("create listing", listing);
+  // const username = await studentHousingDB.getUserByUsername(session.userid);
+  // // console.log("got user", username);
+  // const owner = await studentHousingDB.getOwnerByUsername(username);
+  // // console.log("got owner", owner);
+  // const authorID = owner.authorID;
+
+  try {
+    await studentHousingDB.createRating(rating);
+    console.log("rating created");
+  } catch (err) {
+    console.log("rating not created");
+  }
+
+  session = req.session;
+
+  res.redirect("listings/" + req.body.listingID);
+});
+
+/* GET listing details. */
+router.get("/listings/:listingID", async function (req, res) {
+  console.log("**attempting GET listing details");
+
+  session = req.session;
+
+  const listingID = req.params.listingID;
+
+  console.log("Got listing details ", listingID);
+
+  const listing = await studentHousingDB.getListingByID(listingID);
+
+  const studObj = {
+    listingID: listingID,
+    user: session.userid,
+  };
+  console.log(studObj);
+  const rating = await studentHousingDB.getRating(studObj);
+  console.log(rating);
+  console.log("Got listing details");
+
+  res.render("listingDetails", {
+    listing: listing,
+    user: session.userid,
+    rating: rating,
+  });
+});
+
+/* GET Update listing details. */
+router.get("/listings/update/:listingID", async function (req, res) {
+  console.log("**attempting POST listings/update/ID");
+
+  const listingID = req.params.listingID;
+  console.log("Got listing details ", listingID);
+
+  const listing = await studentHousingDB.getListingByID(listingID);
+  console.log("Listing updated");
+
+  session = req.session;
+
+  res.render("listingEdit", { listing: listing });
+});
+
+/* GET Update listing details. */
+// router.get("/updateRating", async function (req, res) {
+//   const rating = req.body;
+//   console.log("Got listing details ", rating);
+
+//   const rating = await studentHousingDB.getRating(rating);
+//   console.log("Listing updated");
+
+//   session = req.session;
+
+//   res.redirect("/");
+// });
+
+/* POST update listing. */
+router.post("/listings/update", async function (req, res) {
+  console.log("**attempting POST listings/update");
+  try {
+    await studentHousingDB.updateListing(listing);
+    console.log("Listing updated");
+  } catch (err) {
+    console.log("Listing not updated");
+  }
+
+  session = req.session;
+  console.log("update listing session", session);
+
+  const listing = req.body;
+  // console.log("POST update listing", listing);
+
+  res.redirect("/");
+});
+
+/* POST delete listing. */
+router.post("/listings/delete", async function (req, res) {
+  console.log("**attempting POST delete listing");
+
+  const listing = req.body;
+  console.log("delete listing", listing);
+  session = req.session;
+
+  try {
+    await studentHousingDB.deleteListing(listing);
+    console.log("Listing deleted");
+  } catch (err) {
+    console.log("Listing not deleted");
+  }
 
   res.redirect("/");
 });
@@ -110,51 +253,8 @@ router.post("/message/send", async function (req, res) {
   const msg = req.body;
   console.log("Got create message", msg);
 
-  await listingDB.createMessage(msg);
+  await studentHousingDB.createMessage(msg);
   console.log("Message created");
-
-  res.redirect("/");
-});
-
-/* GET listing details. */
-router.get("/listings/:listingID", async function (req, res) {
-  console.log("Got listing details");
-
-  const listingID = req.params.listingID;
-
-  console.log("Got listing details ", listingID);
-
-  const listing = await listingDB.getListingByID(listingID);
-
-  console.log("Listing updated");
-
-  res.render("listingDetails", { listing: listing });
-});
-
-/* POST update listing. */
-router.post("/listings/update", async function (req, res) {
-  console.log("POST listings/update");
-
-  const listing = req.body;
-  // console.log("POST update listing", listing);
-
-  await listingDB.updateListing(listing);
-  console.log("Listing updated");
-
-  res.redirect("/");
-});
-
-/* POST delete listing. */
-router.post("/listings/delete", async function (req, res) {
-  console.log("POST delete listing");
-
-  const listing = req.body;
-
-  // console.log("got delete listing", listing);
-
-  await listingDB.deleteListing(listing);
-
-  console.log("Listing deleted");
 
   res.redirect("/");
 });
