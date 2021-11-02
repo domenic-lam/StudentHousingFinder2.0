@@ -16,10 +16,10 @@ async function connect() {
  */
 
 const StudentHousingDBController = function () {
-  const studenthousingDB = {};
+  const studentHousingDB = {};
 
   //this function will save a new user to the database
-  studenthousingDB.createNewUser = async newUser => {
+  studentHousingDB.createNewUser = async newUser => {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
@@ -40,7 +40,7 @@ const StudentHousingDBController = function () {
   };
 
   // this function will query the database for a user object by using an username string
-  studenthousingDB.getUserByUsername = async query => {
+  studentHousingDB.getUserByUsername = async query => {
     const db = await connect();
 
     const stmt = await db.prepare(`SELECT *
@@ -57,7 +57,7 @@ const StudentHousingDBController = function () {
   };
 
   // this function will query the database for a user object by using an username string and password
-  studenthousingDB.getUserCred = async user => {
+  studentHousingDB.getUserCred = async user => {
     const db = await connect();
 
     console.log(user);
@@ -82,7 +82,7 @@ const StudentHousingDBController = function () {
    ***************Student and Owner CRUD OPERATIONS*********************
    */
 
-  studenthousingDB.createNewStudent = async function (newStudent) {
+  studentHousingDB.createNewStudent = async function (newStudent) {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
@@ -107,7 +107,7 @@ const StudentHousingDBController = function () {
     }
   };
 
-  studenthousingDB.createNewOwner = async function (newOwner) {
+  studentHousingDB.createNewOwner = async function (newOwner) {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
@@ -128,7 +128,7 @@ const StudentHousingDBController = function () {
     }
   };
 
-  studenthousingDB.getOwnerByUsername = async ownerID => {
+  studentHousingDB.getOwnerByUsername = async username => {
     const db = await connect();
 
     const stmt = await db.prepare(`SELECT *
@@ -137,13 +137,29 @@ const StudentHousingDBController = function () {
       username = :username
     `);
     stmt.bind({
-      ":username": ownerID.username,
+      ":username": username.username,
     });
 
     return await stmt.get();
   };
 
-  studenthousingDB.getStudentByUsername = async studentID => {
+  studentHousingDB.getOwnerByAuthorID = async authorID => {
+    const db = await connect();
+
+    const stmt = await db.prepare(`SELECT *
+    FROM Owner
+    WHERE
+      authorID = :authorID
+    `);
+
+    stmt.bind({
+      ":authorID": authorID.authorID,
+    });
+
+    return await stmt.get();
+  };
+
+  studentHousingDB.getStudentByUsername = async studentID => {
     const db = await connect();
 
     const stmt = await db.prepare(`SELECT *
@@ -162,13 +178,13 @@ const StudentHousingDBController = function () {
    ***************Listing CRUD OPERATIONS*********************
    */
   // create new Listing
-  studenthousingDB.createListing = async (newListing, authorID) => {
+  studentHousingDB.createListing = async newListing => {
     const db = await connect();
 
     const stmt = await db.prepare(`INSERT INTO
-    Listing(location, openingDate, size, unitType, offer, description, leaseInMonths, available, authorID)
-    VALUES (:location, :openingDate, :size, :unitType, :offer, :description, :leaseInMonths, :available, :authorID)
-  `);
+      Listing(location, openingDate, size, unitType, offer, description, leaseInMonths, available, authorID)
+      VALUES (:location, :openingDate, :size, :unitType, :offer, :description, :leaseInMonths, :available, :authorID)
+    `);
 
     stmt.bind({
       ":location": newListing.location,
@@ -179,14 +195,14 @@ const StudentHousingDBController = function () {
       ":description": newListing.description,
       ":leaseInMonths": newListing.leaseInMonths,
       ":available": newListing.available,
-      ":authorID": authorID,
+      ":authorID": 1,
     });
 
     return await stmt.run();
   };
 
   // get all Listings , may implement pagination later
-  studenthousingDB.getListings = async () => {
+  studentHousingDB.getListings = async () => {
     const db = await connect();
 
     return await db.all(
@@ -195,7 +211,7 @@ const StudentHousingDBController = function () {
   };
 
   // read selected Listing info
-  studenthousingDB.getListingByID = async listingID => {
+  studentHousingDB.getListingByID = async listingID => {
     const db = await connect();
 
     const stmt = await db.prepare(`SELECT *
@@ -212,7 +228,7 @@ const StudentHousingDBController = function () {
   };
 
   // update Listing info
-  studenthousingDB.updateListing = async listingToUpdate => {
+  studentHousingDB.updateListing = async listingToUpdate => {
     const db = await connect();
 
     const stmt = await db.prepare(`UPDATE Listing
@@ -236,7 +252,7 @@ const StudentHousingDBController = function () {
   };
 
   // delete Listing
-  studenthousingDB.deleteListing = async listingToDelete => {
+  studentHousingDB.deleteListing = async listingToDelete => {
     const db = await connect();
 
     const stmt = await db.prepare(`DELETE FROM
@@ -274,7 +290,7 @@ const StudentHousingDBController = function () {
   //   return await stmt.run();
   // }
 
-  return studenthousingDB;
+  return studentHousingDB;
 };
 
 module.exports = StudentHousingDBController();

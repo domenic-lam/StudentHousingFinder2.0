@@ -29,7 +29,7 @@ app.use(
     saveUninitialized: false, // don't create session until something stored
     secret: "564653456fsd3fd76f3",
     cookie: {
-      expires: 600000,
+      expires: 10000000,
     },
   })
 );
