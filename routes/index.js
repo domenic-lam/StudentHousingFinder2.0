@@ -103,12 +103,14 @@ router.post("/listings/create", async function (req, res) {
   console.log("**attempting POST listings/create");
 
   const listing = req.body;
-  // console.log("create listing", listing);
-  // const username = await studentHousingDB.getUserByUsername(session.userid);
-  // // console.log("got user", username);
-  // const owner = await studentHousingDB.getOwnerByUsername(username);
-  // // console.log("got owner", owner);
-  // const authorID = owner.authorID;
+  console.log("create listing", listing);
+  const username = await studentHousingDB.getUserByUsername(session.userid);
+  // console.log("got user", username);
+  const owner = await studentHousingDB.getOwnerByUsername(username);
+  // console.log("got owner", owner);
+  const authorID = owner.authorID;
+  session.authorID = authorID;
+  console.log("got authorID", session.authorID);
 
   try {
     await studentHousingDB.createListing(listing);
@@ -212,18 +214,19 @@ router.get("/listings/update/:listingID", async function (req, res) {
 /* POST update listing. */
 router.post("/listings/update", async function (req, res) {
   console.log("**attempting POST listings/update");
+
+  const listing = req.body;
+  // console.log("POST update listing", listing);
+
   try {
     await studentHousingDB.updateListing(listing);
     console.log("Listing updated");
   } catch (err) {
-    console.log("Listing not updated");
+    console.log("Listing not updated: " + err);
   }
 
   session = req.session;
   console.log("update listing session", session);
-
-  const listing = req.body;
-  // console.log("POST update listing", listing);
 
   res.redirect("/");
 });
