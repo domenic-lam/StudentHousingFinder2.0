@@ -211,7 +211,7 @@ const StudentHousingDBController = function () {
   };
 
   // // get all Listings , may implement pagination later
-  studentHousingDB.getRating = async (student) => {
+  studentHousingDB.getRatingByIDS = async (student) => {
     const db = await connect();
 
     const stmt =
@@ -225,7 +225,7 @@ const StudentHousingDBController = function () {
       ":raterID": student.user,
     });
 
-    return await stmt.run();
+    return await stmt.get();
   };
 
   // // read selected Listing info
@@ -245,6 +245,7 @@ const StudentHousingDBController = function () {
     return await stmt.get();
   };
 
+  //creating Rating info
   studentHousingDB.createRating = async (newRating) => {
     const db = await connect();
 
@@ -262,27 +263,20 @@ const StudentHousingDBController = function () {
     return await stmt.run();
   };
 
-  // update Rating info
-  studentHousingDB.updateListing = async (listingToUpdate) => {
+  // update rating info
+  studentHousingDB.updateRating = async (ratingToUpdate) => {
     const db = await connect();
 
-    const stmt = await db.prepare(`UPDATE Listing
-    SET location = :location, openingDate = :openingDate, size = :size, unitType = :unitType, offer = :offer, description = :description, leaseInMonths = :leaseInMonths, available = :available
+    const stmt = await db.prepare(`UPDATE Rating
+    SET raterID = :raterID, rating = :rating, listingID = :listingID
     WHERE listingID = :theIDToUpdate
   `);
 
     stmt.bind({
-      ":theIDToUpdate": listingToUpdate.listingID,
-      ":location": listingToUpdate.location,
-      ":openingDate": listingToUpdate.openingDate,
-      ":size": listingToUpdate.size,
-      ":unitType": listingToUpdate.unitType,
-      ":offer": listingToUpdate.offer,
-      ":description": listingToUpdate.description,
-      ":leaseInMonths": listingToUpdate.leaseInMonths,
-      ":available": listingToUpdate.available,
+      ":raterID": ratingToUpdate.user,
+      ":rating": ratingToUpdate.rating,
+      ":theIDToUpdate": ratingToUpdate.listingID,
     });
-
     return await stmt.run();
   };
 
