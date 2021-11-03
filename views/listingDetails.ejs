@@ -44,63 +44,104 @@
             Available: <%= listing.available %>
             <br />
             Owner: <%= owner.firstName %> <%= owner.lastName %>
+            <br />
+            <!-- Need to calc avg -->
+            <!-- Average Rating: <%= rating %> -->
+            <br />
+            Your Rating: <%= rating %>
           </div>
         </div>
         <!-- /.col-8 -->
 
         <div class="col-4">
-          <form action="/message/create" method="POST">
-            <div>
-              <label class="form-label"
-                >Message the owner:
-                <textarea
-                  class="form-control"
-                  id="message"
-                  name="message"
-                  rows="4"
-                  placeholder="Hi, I am interested in this unit."
-                ></textarea>
-              </label>
-              <label class="form-label">
-                <input
-                  class="form-control"
-                  id="receiver"
-                  name="receiver"
-                  type="hidden"
-                  value="<%= owner.username %>"
-                />
-              </label>
-              <label class="form-label">
-                <input
-                  class="form-control"
-                  id="sender"
-                  name="sender"
-                  type="hidden"
-                  value="<%= user %>"
-                />
-              </label>
-              <label class="form-label">
-                <input
-                  class="form-control"
-                  id="time"
-                  name="time"
-                  type="hidden"
-                  value="<%= time %>"
-                />
-              </label>
-              <label class="form-label">
-                <input
-                  class="form-control"
-                  id="listingID"
-                  name="listingID"
-                  type="hidden"
-                  value="<%= listing.listingID %>"
-                />
-              </label>
+          <div>
+            <form action="/message/create" method="POST">
+              <div>
+                <label class="form-label"
+                  >Message the owner:
+                  <textarea
+                    class="form-control"
+                    id="message"
+                    name="message"
+                    rows="4"
+                    placeholder="Hi, I am interested in this unit."
+                  ></textarea>
+                </label>
+                <label class="form-label">
+                  <input
+                    class="form-control"
+                    id="receiver"
+                    name="receiver"
+                    type="hidden"
+                    value="<%= owner.username %>"
+                  />
+                </label>
+                <label class="form-label">
+                  <input
+                    class="form-control"
+                    id="sender"
+                    name="sender"
+                    type="hidden"
+                    value="<%= user %>"
+                  />
+                </label>
+                <label class="form-label">
+                  <input
+                    class="form-control"
+                    id="time"
+                    name="time"
+                    type="hidden"
+                    value="<%= time %>"
+                  />
+                </label>
+                <label class="form-label">
+                  <input
+                    class="form-control"
+                    id="listingID"
+                    name="listingID"
+                    type="hidden"
+                    value="<%= listing.listingID %>"
+                  />
+                </label>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Send Message
+              </button>
+            </form>
+          </div>
+          <div>
+            <br />
+            <div class="row">
+              <ul>
+                <% msgs.forEach(function (m) { %>
+                <div class="card text-white bg-dark mb-3" style="width: 18rem">
+                  <div class="card-header"><%= m.sender %>(You) said to <%= owner.firstName %>:</div>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item text-center"><%= m.message %></li>
+                    <li class="list-group-item text-end">at <%= m.time %></li>
+                  </ul>
+                  <form class="text-center card-footer" action="/message/delete" method="POST">
+                    <input
+                      type="hidden"
+                      name="listingID"
+                      value="<%= listing.listingID %>"
+                    />
+                    <input
+                      type="hidden"
+                      name="message"
+                      id="message"
+                      value="<%= m.messageID %>"
+                    />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                  </form>
+                </div>
+                <br />
+                <% })%>
+              </ul>
             </div>
-            <button type="submit" class="btn btn-primary">Send Message</button>
-          </form>
+          </div>
         </div>
+        <!-- /.col-4 -->
       </main>
     </div>
   </body>
