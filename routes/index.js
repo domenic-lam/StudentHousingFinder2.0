@@ -161,7 +161,7 @@ router.get("/listings/:listingID", async function (req, res) {
 
   const listingID = req.params.listingID;
 
-  console.log("Got listing details ", listingID);
+  // console.log("Got listing details ", listingID);
 
   const listing = await studentHousingDB.getListingByID(listingID);
 
@@ -174,7 +174,7 @@ router.get("/listings/:listingID", async function (req, res) {
   console.log(rating);
   // console.log("Got listing details", listing);
   const owner = await studentHousingDB.getOwnerByAuthorID(listing.authorID);
-  console.log("Got owner" + owner);
+  // console.log("Got owner" + owner.username);
 
   const time = new Date().toLocaleTimeString([], {
     hour: "2-digit",
