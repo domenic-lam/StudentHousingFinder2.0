@@ -43,7 +43,7 @@ router.get("/", async function (req, res) {
       res.render("studentHome", {
         title: "StudentHousingFinderStudentHome",
         listings: listings,
-        username: username,
+        username: student.username,
       });
       console.log("student session: ", req.session);
     }
@@ -153,7 +153,7 @@ router.post("/createRating", async function (req, res) {
   res.redirect("listings/" + req.body.listingID);
 });
 
-/* GET listing details. */
+/* GET listing details page. */
 router.get("/listings/:listingID", async function (req, res) {
   console.log("**attempting GET listing details");
 
@@ -172,28 +172,41 @@ router.get("/listings/:listingID", async function (req, res) {
   console.log(studObj);
   const rating = await studentHousingDB.getRating(studObj);
   console.log(rating);
-  console.log("Got listing details");
+  // console.log("Got listing details", listing);
+  const owner = await studentHousingDB.getOwnerByAuthorID(listing.authorID);
+  console.log("Got owner" + owner);
+
+  const time = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   res.render("listingDetails", {
-    listing: listing,
+    listing,
     user: session.userid,
-    rating: rating,
+    rating,
+    owner: owner,
+    time,
   });
 });
 
 /* GET Update listing details. */
 router.get("/listings/update/:listingID", async function (req, res) {
-  console.log("**attempting POST listings/update/ID");
+  // console.log("**attempting POST listings/update/ID");
 
   const listingID = req.params.listingID;
-  console.log("Got listing details ", listingID);
+  // console.log("Got listing details ", listingID);
 
   const listing = await studentHousingDB.getListingByID(listingID);
-  console.log("Listing updated");
+  // console.log("Listing updated");
 
   session = req.session;
+  // console.log("session.userid: ", session);
 
-  res.render("listingEdit", { listing: listing });
+  res.render("listingEdit", {
+    listing,
+    username: session.userid,
+  });
 });
 
 /* GET Update listing details. */
@@ -233,12 +246,12 @@ router.post("/listings/update", async function (req, res) {
 router.post("/listings/delete", async function (req, res) {
   console.log("**attempting POST delete listing");
 
-  const listing = req.body;
-  console.log("delete listing", listing);
+  const listingID = req.body;
+  console.log("delete listing", listingID);
   session = req.session;
 
   try {
-    await studentHousingDB.deleteListing(listing);
+    await studentHousingDB.deleteListing(listingID);
     console.log("Listing deleted");
   } catch (err) {
     console.log("Listing not deleted");
@@ -248,16 +261,19 @@ router.post("/listings/delete", async function (req, res) {
 });
 
 /* POST send message. */
-router.post("/message/send", async function (req, res) {
-  console.log("Got post message/send");
+router.post("/message/create", async function (req, res) {
+  console.log("Got post message/create");
 
   const msg = req.body;
   console.log("Got create message", msg);
+  try {
+    await studentHousingDB.createMessage(msg);
+    console.log("Message created");
+  } catch (err) {
+    console.log("Message not created:" + err);
+  }
 
-  await studentHousingDB.createMessage(msg);
-  console.log("Message created");
-
-  res.redirect("/");
+  res.redirect("/listings/" + msg.listingID);
 });
 
 module.exports = router;

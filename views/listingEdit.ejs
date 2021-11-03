@@ -17,7 +17,11 @@
       <!-- Navigation Bar -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/">Student Housing</a>
+          <h1 class="navbar-brand">Student Housing Finder</h1>
+          <p>Hello, <%= username %></p>
+          <form action="/logout" method="GET" class="d-flex">
+            <button type="submit" class="btn btn-primary">Log Out</button>
+          </form>
         </div>
       </nav>
       <!-- End navigation bar -->
@@ -99,7 +103,8 @@
                   id="description"
                   name="description"
                   rows="4"
-                ><%= listing.description %></textarea
+                >
+<%= listing.description %></textarea
                 >
               </label>
             </div>

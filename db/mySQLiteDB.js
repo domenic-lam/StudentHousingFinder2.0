@@ -191,7 +191,7 @@ let StudentHousingDBController = function () {
       `);
 
       stmt.bind({
-        ":authorID": authorID.authorID,
+        ":authorID": authorID,
       });
 
       return await stmt.get();
@@ -446,18 +446,17 @@ let StudentHousingDBController = function () {
    ***************MESSAGE CRUD OPERATIONS*********************
    */
 
-  async function createMessage(newMessage) {
+  studentHousingDB.createMessage = async newMessage => {
     let db, stmt;
     try {
       db = await connect();
 
       stmt = await db.prepare(`INSERT INTO
-        Message (messageID, sender, receiver, time, message)
-        VALUES (:messageID, :sender, :receiver, :time, :message)
+        Message (sender, receiver, time, message)
+        VALUES (:sender, :receiver, :time, :message)
       `);
 
       stmt.bind({
-        ":messageID": newMessage.messageID,
         ":sender": newMessage.sender,
         ":receiver": newMessage.receiver,
         ":time": newMessage.time,
@@ -469,7 +468,7 @@ let StudentHousingDBController = function () {
       stmt.finalize();
       db.close();
     }
-  }
+  };
 
   return studentHousingDB;
 };
