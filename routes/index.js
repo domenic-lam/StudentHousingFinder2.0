@@ -15,39 +15,48 @@ router.get("/", async function (req, res) {
   session = req.session;
 
   if (session.userid) {
-    console.log("got session " + session.userid);
+    // console.log("got session " + session.userid);
 
-    const username = await studentHousingDB.getUserByUsername(session.userid);
-    console.log("got user", username);
-    const owner = await studentHousingDB.getOwnerByUsername(username);
-    console.log("got owner", owner);
+    let user = await studentHousingDB.getUserByUsername(session.userid);
+    console.log("got user", user);
+    let owner = await studentHousingDB.getOwnerByUsername(user.username);
+    // console.log("got owner", owner);
 
     if (owner != undefined) {
       const authorID = owner.authorID;
-      console.log("owner session: ", req.session);
+      // console.log("owner session: ", req.session);
       const ownerListings = await studentHousingDB.getListingByAuthorID(
         authorID
       );
-      // res.redirect("/ownerHome");
+      console.log("render ownerHome ");
       res.render("ownerHome", {
         title: "StudentHousingFinderOwnerHome",
         listings: ownerListings,
-        username: username,
+        username: user.username,
         authorID: authorID,
       });
     } else {
-      console.log(listings);
-      const student = await studentHousingDB.getStudentByUsername(username);
+      const student = await studentHousingDB.getStudentByUsername(
+        user.username
+      );
       console.log("got student", student);
-      //console.log("hello " + listings.rating);
+      // const msgs = await studentHousingDB.getMessages(
+      //   ,
+      //   owner.username
+      // );
+
+      // console.log("hello " + listings.rating);
+
+      // console.log("student session: ", req.session);
+      console.log("render studentHome ");
       res.render("studentHome", {
         title: "StudentHousingFinderStudentHome",
         listings: listings,
-        username: student.username,
+        username: user.username,
       });
-      console.log("student session: ", req.session);
     }
   } else {
+    console.log("render index ");
     res.render("index", {
       title: "StudentHousingFinderHome",
       listings: listings,
@@ -64,13 +73,14 @@ router.post("/user", async function (req, res) {
   session = req.session;
   session.userid = req.body.username;
 
-  const username = await studentHousingDB.getUserByUsername(session.userid);
-  console.log("got user", username);
-  const owner = await studentHousingDB.getOwnerByUsername(username);
-  console.log("got owner", owner);
+  const user = await studentHousingDB.getUserByUsername(session.userid);
+  console.log("got user", user);
+  // const username = user.username;
+  // const owner = await studentHousingDB.getOwnerByUsername(username);
+  // console.log("got owner", owner);
   // const student = await studentHousingDB.getOwnerByUsername(user);
 
-  if (req.body.password == username.password) {
+  if (req.body.password == user.password) {
     res.redirect("/");
   }
 });
@@ -161,20 +171,25 @@ router.get("/listings/:listingID", async function (req, res) {
 
   const listingID = req.params.listingID;
 
-  // console.log("Got listing details ", listingID);
+  console.log("Got listing details ", listingID);
 
   const listing = await studentHousingDB.getListingByID(listingID);
+  console.log("Got listing by ID ", listing);
 
-  const studObj = {
-    listingID: listingID,
-    user: session.userid,
-  };
-  console.log(studObj);
-  const rating = await studentHousingDB.getRating(studObj);
-  console.log(rating);
-  // console.log("Got listing details", listing);
+  // const studObj = {
+  //   listingID: listingID,
+  //   user: session.userid,
+  // };
+  console.log("listingID, user: ", listingID, session.userid);
+  const rating = await studentHousingDB.getRating(listingID, session.userid);
+  // console.log(rating);
+  console.log("Got listing details", listing);
   const owner = await studentHousingDB.getOwnerByAuthorID(listing.authorID);
-  // console.log("Got owner" + owner.username);
+  console.log("Got owner" + owner.username);
+  const msgs = await studentHousingDB.getMessages(
+    session.userid,
+    owner.username
+  );
 
   const time = new Date().toLocaleTimeString([], {
     hour: "2-digit",
@@ -187,6 +202,7 @@ router.get("/listings/:listingID", async function (req, res) {
     rating,
     owner: owner,
     time,
+    msgs,
   });
 });
 
@@ -271,6 +287,22 @@ router.post("/message/create", async function (req, res) {
     console.log("Message created");
   } catch (err) {
     console.log("Message not created:" + err);
+  }
+
+  res.redirect("/listings/" + msg.listingID);
+});
+
+/* POST send message. */
+router.post("/message/delete", async function (req, res) {
+  console.log("Got post message/delete");
+
+  const msg = req.body;
+  console.log("Got delete message", msg);
+  try {
+    await studentHousingDB.deleteMessage(msg.message);
+    console.log("Message deleted");
+  } catch (err) {
+    console.log("Message not deleted:" + err);
   }
 
   res.redirect("/listings/" + msg.listingID);
