@@ -226,7 +226,7 @@ let StudentHousingDBController = function () {
    ***************Listing CRUD OPERATIONS*********************
    */
   // create new Listing
-  studentHousingDB.createListing = async newListing => {
+  studentHousingDB.createListing = async (newListing, authorID) => {
     let db, stmt;
     try {
       db = await connect();
@@ -245,7 +245,7 @@ let StudentHousingDBController = function () {
         ":description": newListing.description,
         ":leaseInMonths": newListing.leaseInMonths,
         ":available": newListing.available,
-        ":authorID": 1,
+        ":authorID": authorID,
       });
 
       return await stmt.run();
@@ -262,7 +262,7 @@ let StudentHousingDBController = function () {
       db = await connect();
 
       return await db.all(
-        "SELECT Avg(Rating.rating) AS avgRating, Rating.rating, Rating.raterID, Listing.location,Listing.openingDate, Listing.size, Listing.unitType, Listing.offer, Listing.description, Listing.leaseInMonths, Listing.listingID, Listing.available FROM Listing JOIN Rating ON Rating.listingId = Listing.listingId GROUP BY Listing.listingId ORDER BY Listing.listingId DESC LIMIT 20"
+        "SELECT * FROM Listing JOIN Rating ON Rating.listingId = Listing.listingId ORDER BY Listing.listingID DESC LIMIT 20"
       );
     } finally {
       db.close();
@@ -291,7 +291,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  // // read selected Listing info
+  // read selected Listing info
   studentHousingDB.getListingByID = async listingID => {
     let db, stmt;
     try {
@@ -308,6 +308,29 @@ let StudentHousingDBController = function () {
       });
 
       return await stmt.get();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  // read selected Listing info
+  studentHousingDB.getListingByAuthorID = async authorID => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`SELECT *
+      FROM Listing
+      WHERE
+        authorID = :authorID
+    `);
+
+      stmt.bind({
+        ":authorID": authorID,
+      });
+
+      return await stmt.all();
     } finally {
       stmt.finalize();
       db.close();

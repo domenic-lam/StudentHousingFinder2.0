@@ -17,7 +17,10 @@
       <!-- Navigation Bar -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/">Student Housing</a>
+          <h1 class="navbar-brand">Student Housing Finder</h1>
+          <form action="/logout" method="GET" class="d-flex">
+            <button type="submit" class="btn btn-primary">Log Out</button>
+          </form>
         </div>
       </nav>
       <!-- End navigation bar -->
@@ -26,7 +29,6 @@
         <div class="col-8">
           <h1 class="display-1"><%= listing.location %></h1>
           <div>
-            <h2><%= listing.location %></h2>
             <br />
             Opening Date: <%= listing.openingDate %>
             <br>
@@ -38,58 +40,7 @@
             <br>
             Description: <%= listing.description %>
             <br>
-            Available: 
-            <script type="text/javascript">
-              if (<%= listing.available %> == "TRUE") {
-                document.write("Yes")
-              } else {
-                document.write("No")
-              }
-            </script>
-            <% if (rating.rating != undefined) { %>
-            
-                            <h3> My Rating:</h3>
-                                <%= rating.rating %>
-                                
-                                <div>Update Rating</div>
-                                <form action="/updateRating" method="POST">
-                                    <label for="rating">1</label>
-                                    <input type="checkbox" id="rating" name="rating" value="1">
-                                    <label for="rating">2</label>
-                                    <input type="checkbox" id="rating" name="rating" value="2">
-                                    <label for="rating">3</label>
-                                    <input type="checkbox" id="rating" name="rating" value="3">
-                                    <label for="rating">4</label>
-                                    <input type="checkbox" id="rating" name="rating" value="4">
-                                    <label for="rating">5</label>
-                                    <input type="checkbox" id="rating" name="rating" value="5">
-                                    <input type="hidden" name="listingID" value="<%= listing.listingID %>" />
-                                    
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
-                            
-                            
-                            <%} else { %>
-                            <h3> No Rating </h3>
-                               <div>Rate Listing</div>
-                                <form action="/createRating" method="POST">
-                                    <label for="rating">1</label>
-                                    <input type="checkbox" id="rating" name="rating" value="1">
-                                    <label for="rating">2</label>
-                                    <input type="checkbox" id="rating" name="rating" value="2">
-                                    <label for="rating">3</label>
-                                    <input type="checkbox" id="rating" name="rating" value="3">
-                                    <label for="rating">4</label>
-                                    <input type="checkbox" id="rating" name="rating" value="4">
-                                    <label for="rating">5</label>
-                                    <input type="checkbox" id="rating" name="rating" value="5">
-                                    <input type="hidden" name="listingID" value="<%= listing.listingID %>" />
-                                    
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
-                            
-                            <% } %>
-                            
+            Available:  <%= listing.available %>
           </div>
         </div>
         <!-- /.col-8 -->
@@ -105,6 +56,18 @@
                   name="message"
                   rows="4"
                   placeholder="Hi, I am interested in this unit."
+                ></textarea>
+              </label>
+            </div>
+            <div>
+              <label class="form-label"
+                >Message the owner:
+                <textarea
+                  class="form-control"
+                  id="sender"
+                  name="sender"
+                  rows="4"
+                  value="<%= username %>"
                 ></textarea>
               </label>
             </div>

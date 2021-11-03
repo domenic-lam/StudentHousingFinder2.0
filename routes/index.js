@@ -25,10 +25,13 @@ router.get("/", async function (req, res) {
     if (owner != undefined) {
       const authorID = owner.authorID;
       console.log("owner session: ", req.session);
+      const ownerListings = await studentHousingDB.getListingByAuthorID(
+        authorID
+      );
       // res.redirect("/ownerHome");
       res.render("ownerHome", {
         title: "StudentHousingFinderOwnerHome",
-        listings: listings,
+        listings: ownerListings,
         username: username,
         authorID: authorID,
       });
@@ -93,12 +96,7 @@ router.get("/student", function (req, res) {
   res.render("studentRegister");
 });
 
-/* GET studentHome. */
-router.get("/studentHome", function (req, res) {
-  res.render("studentHome");
-});
-
-/* POST create rating. */
+/* POST create listing. */
 router.post("/listings/create", async function (req, res) {
   console.log("**attempting POST listings/create");
 
@@ -113,7 +111,7 @@ router.post("/listings/create", async function (req, res) {
   console.log("got authorID", session.authorID);
 
   try {
-    await studentHousingDB.createListing(listing);
+    await studentHousingDB.createListing(listing, authorID);
     console.log("Listing created");
   } catch (err) {
     console.log("Listing not created");
