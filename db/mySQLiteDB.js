@@ -201,7 +201,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getStudentByUsername = async studentID => {
+  studentHousingDB.getStudentByUsername = async username => {
     let db, stmt;
     try {
       db = await connect();
@@ -212,7 +212,7 @@ let StudentHousingDBController = function () {
         username = :username
       `);
       stmt.bind({
-        ":username": studentID.username,
+        ":username": username,
       });
 
       return await stmt.get();
@@ -262,7 +262,10 @@ let StudentHousingDBController = function () {
       db = await connect();
 
       return await db.all(
-        "SELECT * FROM Listing JOIN Rating ON Rating.listingId = Listing.listingId ORDER BY Listing.listingID DESC LIMIT 20"
+        `SELECT *
+        FROM Listing
+        JOIN Rating ON Rating.listingId = Listing.listingId
+        ORDER BY Listing.listingID DESC`
       );
     } finally {
       db.close();
@@ -270,21 +273,23 @@ let StudentHousingDBController = function () {
   };
 
   // // get all Listings , may implement pagination later
-  studentHousingDB.getRating = async student => {
+  studentHousingDB.getRating = async (listingID, student) => {
     let db, stmt;
     try {
       db = await connect();
 
       stmt = await db.prepare(
-        "SELECT rating FROM Rating WHERE raterID = raterID AND listingID = listingID"
+        `SELECT rating 
+        FROM Rating 
+        WHERE raterID = :raterID AND listingID = :listingID`
       );
 
       stmt.bind({
-        ":listingID": student.listingID,
-        ":raterID": student.user,
+        ":listingID": listingID,
+        ":raterID": student,
       });
 
-      return await stmt.run();
+      return await stmt.get();
     } finally {
       stmt.finalize();
       db.close();
@@ -461,6 +466,71 @@ let StudentHousingDBController = function () {
         ":receiver": newMessage.receiver,
         ":time": newMessage.time,
         ":message": newMessage.message,
+      });
+
+      return await stmt.run();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  studentHousingDB.getMessages = async (sender, receiver) => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`SELECT * 
+        FROM Message
+        WHERE (sender IS :sender AND receiver IS :receiver) OR (sender IS :receiver AND receiver IS :sender)
+      `);
+
+      stmt.bind({
+        ":sender": sender,
+        ":receiver": receiver,
+      });
+
+      return await stmt.all();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  studentHousingDB.getMessageByID = async messageID => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`SELECT * 
+        FROM Message
+        WHERE messageID = :messageID
+      `);
+
+      stmt.bind({
+        ":messageID": messageID,
+      });
+
+      return await stmt.get();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  // delete Message
+  studentHousingDB.deleteMessage = async messageToDelete => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`DELETE FROM
+      Message
+      WHERE messageID = :messageToDelete
+    `);
+
+      stmt.bind({
+        ":messageToDelete": messageToDelete,
       });
 
       return await stmt.run();
