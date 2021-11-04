@@ -36,6 +36,7 @@ let StudentHousingDBController = function () {
       try {
         await stmt.run();
         console.log("sign up successful");
+        return 1;
       } catch (err) {
         console.log("sign up unsuccessful");
       }
@@ -122,6 +123,7 @@ let StudentHousingDBController = function () {
       try {
         await stmt.run();
         console.log("sign up successful");
+        return 1;
       } catch (err) {
         console.log("sign up unsuccessful");
       }
@@ -149,6 +151,7 @@ let StudentHousingDBController = function () {
       try {
         await stmt.run();
         console.log("sign up successful");
+        return 1;
       } catch (err) {
         console.log("sign up unsuccessful");
       }

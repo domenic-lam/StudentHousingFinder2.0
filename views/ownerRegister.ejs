@@ -10,17 +10,17 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css"
-      rel="stylesheet"
-    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
   </head>
 
   <body>
-    <div>
-      <nav></nav>
-      <main>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <h1 class="navbar-brand">Student Housing Finder</h1>
+        </div>
+      </nav>
+      <main class="row">
         <h1>Register👨</h1>
         <form action="/auth/registerOwner" method="POST">
           <div class="form-group">
@@ -70,7 +70,7 @@
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
           <p>Already a member? <a href="/">Login</a></p>
-          <p>Not an Owner? <a href="/student">Register Here</a></p>
+          <p>Not an Owner? <a href="/student">Register Here As Student</a></p>
         </form>
       </main>
     </div>
