@@ -19,7 +19,7 @@ let StudentHousingDBController = function () {
   let studentHousingDB = {};
 
   //this function will save a new user to the database
-  studentHousingDB.createNewUser = async (newUser) => {
+  studentHousingDB.createNewUser = async newUser => {
     let db, stmt;
     try {
       db = await connect();
@@ -47,7 +47,7 @@ let StudentHousingDBController = function () {
   };
 
   // this function will query the database for a user object by using an username string
-  studentHousingDB.getUserByUsername = async (query) => {
+  studentHousingDB.getUserByUsername = async query => {
     let db, stmt;
     try {
       db = await connect();
@@ -70,7 +70,7 @@ let StudentHousingDBController = function () {
   };
 
   // this function will query the database for a user object by using an username string and password
-  studentHousingDB.getUserCred = async (user) => {
+  studentHousingDB.getUserCred = async user => {
     let db, stmt;
     try {
       db = await connect();
@@ -161,7 +161,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getOwnerByUsername = async (username) => {
+  studentHousingDB.getOwnerByUsername = async username => {
     let db, stmt;
     try {
       db = await connect();
@@ -182,7 +182,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getOwnerByAuthorID = async (authorID) => {
+  studentHousingDB.getOwnerByAuthorID = async authorID => {
     let db, stmt;
     try {
       db = await connect();
@@ -204,7 +204,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getStudentByUsername = async (username) => {
+  studentHousingDB.getStudentByUsername = async username => {
     let db, stmt;
     try {
       db = await connect();
@@ -296,16 +296,16 @@ let StudentHousingDBController = function () {
   };
 
   // get all Listings , may implement pagination later
-  studentHousingDB.searchListings = async (searches) => {
+  studentHousingDB.searchListings = async searches => {
     let db, stmt;
     db = await connect();
     if (searches != undefined) {
       try {
         stmt = await db.prepare(
-          `SELECT Round(Avg(rating),1) AS avgRating,Listing.* FROM Rating JOIN Listing ON Listing.listingID = Rating.listingID 
+          `SELECT Round(Avg(rating),1) AS avgRating, Listing.*
+          FROM Rating JOIN Listing ON Listing.listingID = Rating.listingID 
           WHERE (Listing.description LIKE :description AND Listing.leaseInMonths = :leaseInMonths 
-          AND Listing.offer <= offer AND Listing.openingDate 
-          = :openingDate AND Listing.size = :size AND Listing.unitType = :unitType) 
+          AND Listing.offer <= offer AND Listing.openingDate = :openingDate AND Listing.size = :size AND Listing.unitType = :unitType) 
           GROUP BY Listing.listingID UNION SELECT 0 AS avgRating, Listing.* FROM Listing 
           WHERE Listing.listingID NOT IN (SELECT Rating.listingID FROM Rating) ORDER BY Listing.listingID DESC LIMIT 20; 
           `
@@ -361,7 +361,7 @@ let StudentHousingDBController = function () {
   };
 
   // read selected Listing info
-  studentHousingDB.getListingByID = async (listingID) => {
+  studentHousingDB.getListingByID = async listingID => {
     let db, stmt;
     try {
       db = await connect();
@@ -384,7 +384,7 @@ let StudentHousingDBController = function () {
   };
 
   // read selected Listing info
-  studentHousingDB.getListingByAuthorID = async (authorID) => {
+  studentHousingDB.getListingByAuthorID = async authorID => {
     let db, stmt;
     try {
       db = await connect();
@@ -406,7 +406,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.createRating = async (newRating) => {
+  studentHousingDB.createRating = async newRating => {
     let db, stmt;
     try {
       db = await connect();
@@ -430,7 +430,7 @@ let StudentHousingDBController = function () {
   };
 
   // update Listing info
-  studentHousingDB.updateRating = async (ratingToUpdate) => {
+  studentHousingDB.updateRating = async ratingToUpdate => {
     let db, stmt;
     try {
       db = await connect();
@@ -454,7 +454,7 @@ let StudentHousingDBController = function () {
   };
 
   // update Listing info
-  studentHousingDB.updateListing = async (listingToUpdate) => {
+  studentHousingDB.updateListing = async listingToUpdate => {
     let db, stmt;
     try {
       db = await connect();
@@ -484,7 +484,7 @@ let StudentHousingDBController = function () {
   };
 
   // delete Listing
-  studentHousingDB.deleteListing = async (listingToDelete) => {
+  studentHousingDB.deleteListing = async listingToDelete => {
     let db, stmt;
     try {
       db = await connect();
@@ -510,7 +510,7 @@ let StudentHousingDBController = function () {
    ***************MESSAGE CRUD OPERATIONS*********************
    */
 
-  studentHousingDB.createMessage = async (newMessage) => {
+  studentHousingDB.createMessage = async newMessage => {
     let db, stmt;
     try {
       db = await connect();
@@ -557,7 +557,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getAllMessages = async (owner) => {
+  studentHousingDB.getAllMessages = async owner => {
     let db, stmt;
     try {
       db = await connect();
@@ -580,7 +580,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getMessageByID = async (messageID) => {
+  studentHousingDB.getMessageByID = async messageID => {
     let db, stmt;
     try {
       db = await connect();
@@ -602,7 +602,7 @@ let StudentHousingDBController = function () {
   };
 
   // delete Message
-  studentHousingDB.deleteMessage = async (messageToDelete) => {
+  studentHousingDB.deleteMessage = async messageToDelete => {
     let db, stmt;
     try {
       db = await connect();

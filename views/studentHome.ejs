@@ -17,7 +17,7 @@
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
           <h1 class="navbar-brand display-1">Student Housing Finder</h1>
-          <p>Hello, <%= username %></p>
+          <p>Hello <%= student %>!</p>
           <form action="/logout" method="GET" class="d-flex">
             <button type="submit" class="btn btn-primary">Log Out</button>
           </form>
@@ -36,41 +36,34 @@
                 d-flex
                 w-100
                 justify-content-between
-              ">
-                        <div>
-                            <h2 class="display-2">
-                                <%= l.location %>
-                            </h2>
-                            <br />
-                            <%= l.description %> <br />
-                               <% if (l.avgRating > 0) { %>
-                 <h3>Overall Rating: <%=l.avgRating%></h3>
-                 <%}else { %>
-                     <h3>No Ratings Yet</h3>
-                     <% } %>
-                            
-                        </div>
-                    </a>
-                    <br />
-                    <% })%>
-                </ul>
-            </div>
-            <!-- /.col-8 -->
-            <!-- Search Listings side bar (right 4 cols) -->
-            <div class="col-4">
-                <h3>Search Listings</h3>
-            
-            
+              "
+            >
+              <div>
+                <h2 class="display-2"><%= l.location %></h2>
+                <br />
+                <%= l.description %> <br />
+                <% if (l.avgRating > 0) { %>
+                <h3>Overall Rating: <%=l.avgRating%></h3>
+                <%}else { %>
+                <h3>No Ratings Yet</h3>
+                <% } %>
+              </div>
+            </a>
+            <br />
+            <% })%>
+          </ul>
+        </div>
+        <!-- /.col-8 -->
+        
+        <!-- Search Listings side bar (right 4 cols) -->
+        <div class="col-4">
+          <h3>Search Listings</h3>
+
           <form action="/search/Listing" method="POST">
             <div>
               <label class="form-label"
                 >Location:
-                <input
-                  class="form-control"
-                  name="location"
-                  type="text"
-                  required
-                />
+                <input class="form-control" name="location" type="text" />
               </label>
             </div>
             <div>
@@ -92,18 +85,24 @@
                   name="size"
                   type="number"
                   placeholder="550"
-                  required
                 />
               </label>
             </div>
             <div>
-              <label for="unitType" class="form-label"
+              <label for="search" class="form-label"
                 >Unit type:
-                <select class="form-select" id="unitType" name="unitType">
+                <select class="form-select" id="search" name="search">
                   <option value="dorm">Dorm</option>
                   <option value="apartment">Apartment</option>
                 </select>
               </label>
+              <input
+                class="form-control"
+                id="criteria"
+                name="criteria"
+                type="hidden"
+                value="unitType"
+              />
             </div>
             <div>
               <label class="form-label"
@@ -139,12 +138,9 @@
                 />
               </label>
             </div>
-        
-            
             <button type="submit" class="btn btn-primary">Search</button>
           </form>
         </div>
-        
       </main>
     </div>
   </body>
