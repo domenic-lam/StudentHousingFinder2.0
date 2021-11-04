@@ -19,16 +19,12 @@
 
   <body>
     <div class="container">
-      <!-- Navigation Bar -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">Student Housing</a>
-        </div>
-      </nav>
-      <!-- End navigation bar -->
+     
 
       <main>
-        <h1>Register👨‍🎓</h1>
+        <div class="row justify-content-center">
+          <div class="col-6">
+        <h1>Student Registration👨‍🎓</h1>
         <form action="/auth/registerStudent" method="POST">
           <div class="form-group">
             <label for="fistName" class="form-label">First Name</label>
@@ -75,6 +71,21 @@
               id="confirmedpassword"
             />
           </div>
+           <div class="form-group">
+            <label for="budget" class="form-label">Budget</label>
+            <input
+              type="number"
+              class="form-control"
+              name="budget"
+              id="budget"
+            />
+          </div>
+          <div class="form-group">
+            <label for="year" class="form-label">Year</label>
+            <input type="number" class="form-control" name="year" id="year" placeholder="example: 2022" />
+
+          </div></br>
+         
           <div class="form-group">
             <select id="school" name="schoolID">
               <option>select school</option>
@@ -89,7 +100,7 @@
               <option value="9">UCLA</option>
               <option value="10">City College</option>
             </select>
-          </div>
+          </div></br>
           <div class="form-group">
             <select id="season" name="semester">
               <option>select semester</option>
@@ -98,26 +109,15 @@
               <option value="spring">spring</option>
               <option value="summer">summer</option>
             </select>
-          </div>
-          <div class="form-group">
-            <label for="year" class="form-label">Year</label>
-            <input type="number" class="form-control" name="year" id="year" />
-          </div>
-          <div class="form-group">
-            <label for="budget" class="form-label">Budget</label>
-            <input
-              type="number"
-              class="form-control"
-              name="budget"
-              id="budget"
-            />
-          </div>
+          </div></br>
 
           <button type="submit" class="btn btn-primary">Submit</button>
           <p>Already a member? <a href="/">Login</a></p>
           <p>Not a Student? <a href="/owner">Register Here</a></p>
         </form>
       </main>
+      </div>
+    </div>
     </div>
   </body>
 </html>

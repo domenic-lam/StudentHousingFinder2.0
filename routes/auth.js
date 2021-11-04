@@ -12,6 +12,7 @@ router.post("/registerOwner", async (req, res) => {
   console.log(duplicateUsername);
   if (duplicateUsername != undefined) {
     //res.send({ registered: false });
+
     res.redirect("/register");
   } else {
     let newUserObj = {
@@ -19,21 +20,18 @@ router.post("/registerOwner", async (req, res) => {
       password: req.body.password,
     };
     console.log(newUserObj);
-    const registered = await studenthousingDB.saveNewUser(newUserObj);
-    let newOwnerObj = {
-      username: req.body.username,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-    };
-    const owner = await studenthousingDB.saveNewOwner(newOwnerObj);
+    try {
+      await studenthousingDB.createNewUser(newUserObj);
 
-    //if the register was successful, we send a true resposne
-    if (registered === 1 && owner === 1) {
-      //res.send({ registered: true });
+      let newOwnerObj = {
+        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+      };
+      console.log(newOwnerObj);
+      await studenthousingDB.createNewOwner(newOwnerObj);
       res.redirect("/");
-    } else {
-      // send a false response to the frontend if something went wrong with the registration
-      //res.send({ registered: false });
+    } catch (err) {
       res.redirect("/register");
     }
   }
@@ -56,29 +54,23 @@ router.post("/registerStudent", async (req, res) => {
       password: req.body.password,
     };
     console.log(newUserObj);
-    const registered = await studenthousingDB.saveNewUser(newUserObj);
-
-    let newStudentObj = {
-      username: req.body.username,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      schoolID: req.body.schoolID,
-      semester: req.body.semester,
-      year: req.body.year,
-      budget: req.body.budget,
-    };
-
-    console.log(newStudentObj);
-    const student = await studenthousingDB.saveNewStudent(newStudentObj);
-    console.log(student);
-
     //if the register was successful, we send a true resposne
-    if (registered === 1 && student === 1) {
-      //res.send({ registered: true });
+    try {
+      await studenthousingDB.createNewUser(newUserObj);
+      let newStudentObj = {
+        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        schoolID: req.body.schoolID,
+        semester: req.body.semester,
+        year: req.body.year,
+        budget: req.body.budget,
+      };
+      console.log(newStudentObj);
+      await studenthousingDB.createNewStudent(newStudentObj);
+      console.log("student created");
       res.redirect("/");
-    } else {
-      // send a false response to the frontend if something went wrong with the registration
-      //res.send({ registered: false });
+    } catch (err) {
       res.redirect("/register");
     }
   }

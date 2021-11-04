@@ -35,6 +35,8 @@ app.use(
   })
 );
 
+app.use(flash());
+
 app.use("/auth", authRouter);
 app.use("/", indexRouter);
 

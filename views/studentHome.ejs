@@ -11,12 +11,13 @@
 <body>
     <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/user">Student Housing</a>
-                <form action="/logout" method="GET" class="d-flex">
-                    <button type="submit" class="btn btn-primary">Log Out</button>
-                </form>
-            </div>
+          <div class="container-fluid">
+              <h1 class="navbar-brand display-1">Student Housing Finder</h1>
+              <p>Hello, <%= username %></p>
+              <form action="/logout" method="GET" class="d-flex">
+                <button type="submit" class="btn btn-primary">Log Out</button>
+              </form>
+          </div>
         </nav>
         <main class="row">
             <div class="col-8">
@@ -36,9 +37,11 @@
                             </h2>
                             <br />
                             <%= l.description %> <br />
-                            <h3>Overall Rating:
-                                <%=l.avgRating%>
-                            </h3>
+                               <% if (l.avgRating > 0) { %>
+                 <h3>Overall Rating: <%=l.avgRating%></h3>
+                 <%}else { %>
+                     <h3>Not Ratings Yet</h3>
+                     <% } %>
                             
                         </div>
                     </a>

@@ -33,15 +33,17 @@ let StudentHousingDBController = function () {
         ":password": newUser.password,
       });
 
-      try {
-        await stmt.run();
-        console.log("sign up successful");
-      } catch (err) {
-        console.log("sign up unsuccessful");
-      }
+      const a = await stmt.run();
+      console.log("heeee" + a);
+      //   try {
+      //     await stmt.run();
+      //     console.log("sign up successful");
+      //   } catch (err) {
+      //     console.log("sign up unsuccessful");
+      //   }
     } finally {
-      stmt.finalize();
-      db.close();
+      //   stmt.finalize();
+      //   db.close();
     }
   };
 
@@ -119,12 +121,14 @@ let StudentHousingDBController = function () {
         ":budget": newStudent.budget,
       });
 
-      try {
-        await stmt.run();
-        console.log("sign up successful");
-      } catch (err) {
-        console.log("sign up unsuccessful");
-      }
+      await stmt.run();
+
+      // try {
+      //   await stmt.run();
+      //   console.log("student sign up successful");
+      // } catch (err) {
+      //   console.log("student sign up unsuccessful");
+      // }
     } finally {
       stmt.finalize();
       db.close();
@@ -148,9 +152,9 @@ let StudentHousingDBController = function () {
 
       try {
         await stmt.run();
-        console.log("sign up successful");
+        console.log("owner sign up successful");
       } catch (err) {
-        console.log("sign up unsuccessful");
+        console.log("owner sign up unsuccessful");
       }
     } finally {
       stmt.finalize();
@@ -191,7 +195,7 @@ let StudentHousingDBController = function () {
       `);
 
       stmt.bind({
-        ":authorID": authorID.authorID,
+        ":authorID": authorID,
       });
 
       return await stmt.get();
@@ -262,26 +266,27 @@ let StudentHousingDBController = function () {
       db = await connect();
 
       return await db.all(
-        "SELECT * FROM Listing JOIN Rating ON Rating.listingId = Listing.listingId ORDER BY Listing.listingID DESC LIMIT 20"
+        "SELECT Round(Avg(rating),1) AS avgRating,Listing.* FROM Rating JOIN Listing ON Listing.listingID = Rating.listingID GROUP BY Listing.listingID UNION SELECT 0 AS avgRating, Listing.* FROM Listing WHERE Listing.listingID NOT IN (SELECT Rating.listingID FROM Rating)ORDER BY Listing.listingID DESC LIMIT 20;"
       );
     } finally {
       db.close();
     }
   };
 
-  // // get all Listings , may implement pagination later
-  studentHousingDB.getRatingByIDS = async (student) => {
+  studentHousingDB.getRatingByIDS = async (listingID, user) => {
     let db, stmt;
     try {
       db = await connect();
 
       stmt = await db.prepare(
-        "SELECT rating FROM Rating WHERE raterID = raterID AND listingID = listingID"
+        `SELECT rating FROM Rating 
+         WHERE listingID = :listingID AND raterID = :raterID
+      `
       );
 
       stmt.bind({
-        ":listingID": student.listingID,
-        ":raterID": student.user,
+        ":listingID": listingID,
+        ":raterID": user,
       });
 
       return await stmt.get();
@@ -360,27 +365,21 @@ let StudentHousingDBController = function () {
     }
   };
 
-  // update Rating info
-  studentHousingDB.updateListing = async (listingToUpdate) => {
+  // update Listing info
+  studentHousingDB.updateRating = async (ratingToUpdate) => {
     let db, stmt;
     try {
       db = await connect();
 
-      stmt = await db.prepare(`UPDATE Listing
-      SET location = :location, openingDate = :openingDate, size = :size, unitType = :unitType, offer = :offer, description = :description, leaseInMonths = :leaseInMonths, available = :available
-      WHERE listingID = :theIDToUpdate
+      stmt = await db.prepare(`UPDATE Rating
+      SET rating = :rating
+      WHERE listingID = :theIDToUpdate AND raterID = :raterID
     `);
 
       stmt.bind({
-        ":theIDToUpdate": listingToUpdate.listingID,
-        ":location": listingToUpdate.location,
-        ":openingDate": listingToUpdate.openingDate,
-        ":size": listingToUpdate.size,
-        ":unitType": listingToUpdate.unitType,
-        ":offer": listingToUpdate.offer,
-        ":description": listingToUpdate.description,
-        ":leaseInMonths": listingToUpdate.leaseInMonths,
-        ":available": listingToUpdate.available,
+        ":raterID": ratingToUpdate.raterID,
+        ":rating": ratingToUpdate.rating,
+        ":theIDToUpdate": ratingToUpdate.listingID,
       });
 
       return await stmt.run();
@@ -446,18 +445,17 @@ let StudentHousingDBController = function () {
    ***************MESSAGE CRUD OPERATIONS*********************
    */
 
-  async function createMessage(newMessage) {
+  studentHousingDB.createMessage = async (newMessage) => {
     let db, stmt;
     try {
       db = await connect();
 
       stmt = await db.prepare(`INSERT INTO
-        Message (messageID, sender, receiver, time, message)
-        VALUES (:messageID, :sender, :receiver, :time, :message)
+        Message (sender, receiver, time, message)
+        VALUES (:sender, :receiver, :time, :message)
       `);
 
       stmt.bind({
-        ":messageID": newMessage.messageID,
         ":sender": newMessage.sender,
         ":receiver": newMessage.receiver,
         ":time": newMessage.time,
@@ -469,7 +467,7 @@ let StudentHousingDBController = function () {
       stmt.finalize();
       db.close();
     }
-  }
+  };
 
   return studentHousingDB;
 };
