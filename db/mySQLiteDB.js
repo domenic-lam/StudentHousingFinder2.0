@@ -204,7 +204,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getStudentByUsername = async username => {
+  studentHousingDB.getStudentByUsername = async (username) => {
     let db, stmt;
     try {
       db = await connect();
@@ -261,14 +261,79 @@ let StudentHousingDBController = function () {
   // get all Listings , may implement pagination later
   studentHousingDB.getListings = async () => {
     let db;
-    try {
-      db = await connect();
+    db = await connect();
 
+    try {
       return await db.all(
         "SELECT Round(Avg(rating),1) AS avgRating,Listing.* FROM Rating JOIN Listing ON Listing.listingID = Rating.listingID GROUP BY Listing.listingID UNION SELECT 0 AS avgRating, Listing.* FROM Listing WHERE Listing.listingID NOT IN (SELECT Rating.listingID FROM Rating)ORDER BY Listing.listingID DESC LIMIT 20;"
       );
     } finally {
       db.close();
+    }
+  };
+
+  studentHousingDB.getRatingByIDS = async (listingID, user) => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(
+        `SELECT rating FROM Rating 
+         WHERE listingID = :listingID AND raterID = :raterID
+      `
+      );
+
+      stmt.bind({
+        ":listingID": listingID,
+        ":raterID": user,
+      });
+
+      return await stmt.get();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  // get all Listings , may implement pagination later
+  studentHousingDB.searchListings = async (searches) => {
+    let db, stmt;
+    db = await connect();
+    if (searches != undefined) {
+      try {
+        stmt = await db.prepare(
+          `SELECT Round(Avg(rating),1) AS avgRating,Listing.* FROM Rating JOIN Listing ON Listing.listingID = Rating.listingID 
+          WHERE (Listing.description LIKE :description AND Listing.leaseInMonths = :leaseInMonths 
+          AND Listing.offer <= offer AND Listing.openingDate 
+          = :openingDate AND Listing.size = :size AND Listing.unitType = :unitType) 
+          GROUP BY Listing.listingID UNION SELECT 0 AS avgRating, Listing.* FROM Listing 
+          WHERE Listing.listingID NOT IN (SELECT Rating.listingID FROM Rating) ORDER BY Listing.listingID DESC LIMIT 20; 
+          `
+        );
+        stmt.bind({
+          ":location": searches.location,
+          ":openingDate": searches.openingDate,
+          ":size": searches.size,
+          ":unitType": searches.unitType,
+          ":offer": searches.offer,
+          ":description": searches.description,
+          ":leaseInMonths": searches.leaseInMonths,
+        });
+        return await stmt.all();
+      } catch (err) {
+        console.log(err);
+      } finally {
+        stmt.finalize();
+        db.close();
+      }
+    } else {
+      try {
+        return await db.all(
+          "SELECT Round(Avg(rating),1) AS avgRating,Listing.* FROM Rating JOIN Listing ON Listing.listingID = Rating.listingID GROUP BY Listing.listingID UNION SELECT 0 AS avgRating, Listing.* FROM Listing WHERE Listing.listingID NOT IN (SELECT Rating.listingID FROM Rating)ORDER BY Listing.listingID DESC LIMIT 20;"
+        );
+      } finally {
+        db.close();
+      }
     }
   };
 
@@ -492,7 +557,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getAllMessages = async owner => {
+  studentHousingDB.getAllMessages = async (owner) => {
     let db, stmt;
     try {
       db = await connect();
@@ -515,7 +580,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getMessageByID = async messageID => {
+  studentHousingDB.getMessageByID = async (messageID) => {
     let db, stmt;
     try {
       db = await connect();
@@ -537,7 +602,7 @@ let StudentHousingDBController = function () {
   };
 
   // delete Message
-  studentHousingDB.deleteMessage = async messageToDelete => {
+  studentHousingDB.deleteMessage = async (messageToDelete) => {
     let db, stmt;
     try {
       db = await connect();

@@ -75,7 +75,7 @@
                                 <%=l.avgRating%>
                             </h3>
                             <%}else { %>
-                            <h3>Not Ratings Yet</h3>
+                            <h3>No Ratings Yet</h3>
                             <% } %>
                         </div>
                     </a>
@@ -89,7 +89,7 @@
                 <h3>Search Listings</h3>
             
             
-          <form action="/" method="GET">
+          <form action="/search/Listing" method="POST">
             <div>
               <label class="form-label"
                 >Location:
@@ -97,7 +97,7 @@
                   class="form-control"
                   name="location"
                   type="text"
-                  required
+                  
                 />
               </label>
             </div>
@@ -120,7 +120,7 @@
                   name="size"
                   type="number"
                   placeholder="550"
-                  required
+                  
                 />
               </label>
             </div>
@@ -168,11 +168,7 @@
               </label>
             </div>
         
-            <div>
-              <label class="form-label">
-                <input class="form-control" name="authorID" type="hidden" />
-              </label>
-            </div>
+            
             <button type="submit" class="btn btn-primary">Search</button>
           </form>
         </div>
