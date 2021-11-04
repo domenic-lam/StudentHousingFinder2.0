@@ -33,14 +33,13 @@ let StudentHousingDBController = function () {
         ":password": newUser.password,
       });
 
-      const a = await stmt.run();
-      console.log("heeee" + a);
-      //   try {
-      //     await stmt.run();
-      //     console.log("sign up successful");
-      //   } catch (err) {
-      //     console.log("sign up unsuccessful");
-      //   }
+      try {
+        await stmt.run();
+        console.log("sign up successful");
+        return 1;
+      } catch (err) {
+        console.log("sign up unsuccessful");
+      }
     } finally {
       //   stmt.finalize();
       //   db.close();
@@ -121,14 +120,13 @@ let StudentHousingDBController = function () {
         ":budget": newStudent.budget,
       });
 
-      await stmt.run();
-
-      // try {
-      //   await stmt.run();
-      //   console.log("student sign up successful");
-      // } catch (err) {
-      //   console.log("student sign up unsuccessful");
-      // }
+      try {
+        await stmt.run();
+        console.log("sign up successful");
+        return 1;
+      } catch (err) {
+        console.log("sign up unsuccessful");
+      }
     } finally {
       stmt.finalize();
       db.close();
@@ -152,7 +150,8 @@ let StudentHousingDBController = function () {
 
       try {
         await stmt.run();
-        console.log("owner sign up successful");
+        console.log("sign up successful");
+        return 1;
       } catch (err) {
         console.log("owner sign up unsuccessful");
       }
