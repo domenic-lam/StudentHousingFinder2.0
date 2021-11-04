@@ -173,7 +173,7 @@ let StudentHousingDBController = function () {
         username = :username
       `);
       stmt.bind({
-        ":username": username.username,
+        ":username": username,
       });
 
       return await stmt.get();
@@ -205,7 +205,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getStudentByUsername = async (studentID) => {
+  studentHousingDB.getStudentByUsername = async username => {
     let db, stmt;
     try {
       db = await connect();
@@ -216,7 +216,7 @@ let StudentHousingDBController = function () {
         username = :username
       `);
       stmt.bind({
-        ":username": studentID.username,
+        ":username": username,
       });
 
       return await stmt.get();
@@ -431,9 +431,10 @@ let StudentHousingDBController = function () {
     `);
 
       stmt.bind({
-        ":theIDToDelete": listingToDelete.listingID,
+        ":theIDToDelete": listingToDelete,
       });
 
+      // console.log(await stmt.run());
       return await stmt.run();
     } finally {
       stmt.finalize();
@@ -460,6 +461,95 @@ let StudentHousingDBController = function () {
         ":receiver": newMessage.receiver,
         ":time": newMessage.time,
         ":message": newMessage.message,
+      });
+
+      return await stmt.run();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  studentHousingDB.getMessages = async (sender, receiver) => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`SELECT * 
+        FROM Message
+        WHERE (sender IS :sender AND receiver IS :receiver) OR (sender IS :receiver AND receiver IS :sender)
+        ORDER BY time DESC
+      `);
+
+      stmt.bind({
+        ":sender": sender,
+        ":receiver": receiver,
+      });
+
+      return await stmt.all();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  studentHousingDB.getAllMessages = async owner => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`SELECT * 
+        FROM Message
+        WHERE sender IS :sender OR receiver IS :sender
+        ORDER BY time DESC
+      `);
+
+      stmt.bind({
+        ":sender": owner,
+      });
+
+      // console.log(await stmt.all());
+      return await stmt.all();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  studentHousingDB.getMessageByID = async messageID => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`SELECT * 
+        FROM Message
+        WHERE messageID = :messageID
+      `);
+
+      stmt.bind({
+        ":messageID": messageID,
+      });
+
+      return await stmt.get();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  // delete Message
+  studentHousingDB.deleteMessage = async messageToDelete => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`DELETE FROM
+      Message
+      WHERE messageID = :messageToDelete
+    `);
+
+      stmt.bind({
+        ":messageToDelete": messageToDelete,
       });
 
       return await stmt.run();
