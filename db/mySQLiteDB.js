@@ -169,7 +169,7 @@ let StudentHousingDBController = function () {
         username = :username
       `);
       stmt.bind({
-        ":username": username.username,
+        ":username": username,
       });
 
       return await stmt.get();
@@ -437,9 +437,10 @@ let StudentHousingDBController = function () {
     `);
 
       stmt.bind({
-        ":theIDToDelete": listingToDelete.listingID,
+        ":theIDToDelete": listingToDelete,
       });
 
+      // console.log(await stmt.run());
       return await stmt.run();
     } finally {
       stmt.finalize();
@@ -483,6 +484,7 @@ let StudentHousingDBController = function () {
       stmt = await db.prepare(`SELECT * 
         FROM Message
         WHERE (sender IS :sender AND receiver IS :receiver) OR (sender IS :receiver AND receiver IS :sender)
+        ORDER BY time DESC
       `);
 
       stmt.bind({
@@ -490,6 +492,29 @@ let StudentHousingDBController = function () {
         ":receiver": receiver,
       });
 
+      return await stmt.all();
+    } finally {
+      stmt.finalize();
+      db.close();
+    }
+  };
+
+  studentHousingDB.getAllMessages = async owner => {
+    let db, stmt;
+    try {
+      db = await connect();
+
+      stmt = await db.prepare(`SELECT * 
+        FROM Message
+        WHERE sender IS :sender OR receiver IS :sender
+        ORDER BY time DESC
+      `);
+
+      stmt.bind({
+        ":sender": owner,
+      });
+
+      // console.log(await stmt.all());
       return await stmt.all();
     } finally {
       stmt.finalize();

@@ -20,7 +20,7 @@ router.get("/", async function (req, res) {
     let user = await studentHousingDB.getUserByUsername(session.userid);
     console.log("got user", user);
     let owner = await studentHousingDB.getOwnerByUsername(user.username);
-    // console.log("got owner", owner);
+    console.log("got owner", owner);
 
     if (owner != undefined) {
       const authorID = owner.authorID;
@@ -32,7 +32,7 @@ router.get("/", async function (req, res) {
       res.render("ownerHome", {
         title: "StudentHousingFinderOwnerHome",
         listings: ownerListings,
-        username: user.username,
+        username: owner.username,
         authorID: authorID,
       });
     } else {
@@ -68,8 +68,8 @@ router.get("/", async function (req, res) {
 router.post("/user", async function (req, res) {
   console.log("**attempting POST /user");
 
-  const listings = await studentHousingDB.getListings();
-  console.log("got listings");
+  // const listings = await studentHousingDB.getListings();
+  // console.log("got listings");
   session = req.session;
   session.userid = req.body.username;
 
@@ -112,10 +112,10 @@ router.post("/listings/create", async function (req, res) {
 
   const listing = req.body;
   console.log("create listing", listing);
-  const username = await studentHousingDB.getUserByUsername(session.userid);
-  // console.log("got user", username);
-  const owner = await studentHousingDB.getOwnerByUsername(username);
-  // console.log("got owner", owner);
+  const user = await studentHousingDB.getUserByUsername(session.userid);
+  console.log("got user", user);
+  const owner = await studentHousingDB.getOwnerByUsername(user.username);
+  console.log("got owner", owner);
   const authorID = owner.authorID;
   session.authorID = authorID;
   console.log("got authorID", session.authorID);
@@ -180,21 +180,25 @@ router.get("/listings/:listingID", async function (req, res) {
   //   listingID: listingID,
   //   user: session.userid,
   // };
-  console.log("listingID, user: ", listingID, session.userid);
+  // console.log("listingID, user: ", listingID, session.userid);
   const rating = await studentHousingDB.getRating(listingID, session.userid);
   // console.log(rating);
-  console.log("Got listing details", listing);
+  // console.log("Got listing details", listing);
   const owner = await studentHousingDB.getOwnerByAuthorID(listing.authorID);
-  console.log("Got owner" + owner.username);
+  // console.log("Got owner " + owner.username);
   const msgs = await studentHousingDB.getMessages(
     session.userid,
     owner.username
   );
 
-  const time = new Date().toLocaleTimeString([], {
+  let time = new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  if (time.substring(0, 1) == 0) {
+    time = time.substring(1);
+  }
 
   res.render("listingDetails", {
     listing,
@@ -219,7 +223,7 @@ router.get("/listings/update/:listingID", async function (req, res) {
   session = req.session;
   // console.log("session.userid: ", session);
 
-  res.render("listingEdit", {
+  res.render("listingUpdate", {
     listing,
     username: session.userid,
   });
@@ -262,7 +266,7 @@ router.post("/listings/update", async function (req, res) {
 router.post("/listings/delete", async function (req, res) {
   console.log("**attempting POST delete listing");
 
-  const listingID = req.body;
+  const listingID = req.body.listingID;
   console.log("delete listing", listingID);
   session = req.session;
 
@@ -281,7 +285,7 @@ router.post("/message/create", async function (req, res) {
   console.log("Got post message/create");
 
   const msg = req.body;
-  console.log("Got create message", msg);
+  // console.log("Got create message", msg);
   try {
     await studentHousingDB.createMessage(msg);
     console.log("Message created");
@@ -297,7 +301,7 @@ router.post("/message/delete", async function (req, res) {
   console.log("Got post message/delete");
 
   const msg = req.body;
-  console.log("Got delete message", msg);
+  // console.log("Got delete message", msg);
   try {
     await studentHousingDB.deleteMessage(msg.message);
     console.log("Message deleted");
@@ -306,6 +310,55 @@ router.post("/message/delete", async function (req, res) {
   }
 
   res.redirect("/listings/" + msg.listingID);
+});
+
+/* POST view message. */
+router.post("/message/view", async function (req, res) {
+  console.log("**attempting POST message/view");
+
+  res.redirect("/message/" + req.body.username);
+});
+
+/* GET owner's messages page. */
+router.get("/message/:username", async function (req, res) {
+  console.log("**attempting GET owner's messages page");
+
+  const username = req.params.username;
+  console.log("Got username", username);
+
+  const msgs = await studentHousingDB.getAllMessages(username);
+  console.log("Got messages");
+
+  let time = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  if (time.substring(0, 1) == 0) {
+    time = time.substring(1);
+  }
+
+  res.render("ownerMessages", {
+    username: username,
+    msgs,
+    time,
+  });
+});
+
+/* POST reply message. */
+router.post("/message/reply", async function (req, res) {
+  console.log("**attempting POST message/view");
+
+  const msg = req.body;
+  console.log("create message", msg);
+  try {
+    await studentHousingDB.createMessage(msg);
+    console.log("Message replied");
+  } catch (err) {
+    console.log("Message not replied:" + err);
+  }
+
+  res.redirect("/message/" + req.body.sender);
 });
 
 module.exports = router;
