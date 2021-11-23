@@ -3,25 +3,14 @@
 <form action="/search/Listing" method="POST">
   <div>
     <label class="form-label"
+      >Title:
+      <input class="form-control" name="title" type="text" />
+    </label>
+  </div>
+  <div>
+    <label class="form-label"
       >Location:
       <input class="form-control" name="location" type="text" />
-    </label>
-  </div>
-  <div>
-    <label class="form-label"
-      >Opening Date:
-      <input
-        class="form-control"
-        name="openingDate"
-        type="text"
-        placeholder="MM/DD/YYYY"
-      />
-    </label>
-  </div>
-  <div>
-    <label class="form-label"
-      >Size (Sqft):
-      <input class="form-control" name="size" type="number" placeholder="550" />
     </label>
   </div>
   <div>
@@ -42,7 +31,13 @@
   </div>
   <div>
     <label class="form-label"
-      >Offer (Per month):
+      >Size (Sqft):
+      <input class="form-control" name="size" type="number" placeholder="550" />
+    </label>
+  </div>
+  <div>
+    <label class="form-label"
+      >Rent (Per month):
       <input
         class="form-control"
         name="offer"
@@ -59,8 +54,14 @@
         id="description"
         name="description"
         rows="4"
-        placeholder="Please provide a short description of the unit."
+        placeholder="Search by keywords or phrases."
       ></textarea>
+    </label>
+  </div>
+  <div>
+    <label class="form-label"
+      >Opening Date:
+      <input class="form-control" name="openingDate" type="date" />
     </label>
   </div>
   <div>
@@ -72,6 +73,13 @@
         type="number"
         value="6"
       />
+    </label>
+  </div>
+  <div>
+    <label for="search" class="form-label"
+      >Available
+      <label class="form-label"></label>
+      <input type="radio" id="available" name="available" value="true" />
     </label>
   </div>
   <button type="submit" class="btn btn-primary">Search</button>
