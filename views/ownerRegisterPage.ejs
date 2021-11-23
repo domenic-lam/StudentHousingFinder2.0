@@ -17,7 +17,11 @@
     <div class="container">
       <!-- Navigation Bar -->
       <%- include("./components/navNoUser.ejs") %>
-      <main class="row"><%- include("./components/registerOwner.ejs") %></main>
+      <main class="row justify-content-center">
+        <div class="col-6">
+          <%- include("./components/registerOwner.ejs") %>
+        </div>
+      </main>
       <!-- Footer -->
       <%- include("./components/footer.ejs") %>
     </div>
