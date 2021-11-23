@@ -47,7 +47,7 @@ Bernard Ekezie (https://github.com/bekezie) & Ely (Esther) Lam (https://github.c
 - CRUD operations on the ratings
 - CRUD operations on the user and ensuring users have a unique username.
 
-# Project 1 (Part 1: Design):
+# Project 2 (Part 2: Design):
 
 Link to Business Requirements: https://docs.google.com/document/d/1HfzjBWUDes1UxDi9yob0D4R6YMiWGgLErjpFZMa3-3s/edit
 Link to Relational Schema with Functional Dependencies: https://docs.google.com/document/d/1NBktMtUlr1iGigkE8cz2e_R3NzSCWksHU_thtI5k96I/edit
