@@ -16,12 +16,7 @@
   <body>
     <div class="container">
       <!-- Navigation Bar -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-          <h1 class="navbar-brand">Student Housing Finder</h1>
-        </div>
-      </nav>
-      <!-- End navigation bar -->
+      <%- include("./components/navNoUser.ejs") %>
       <main class="row">
         <h1>Register</h1>
         <p>
@@ -29,6 +24,8 @@
           <a href="/owner">Are you an Owner?</a>
         </p>
       </main>
+      <!-- Footer -->
+      <%- include("./components/footer.ejs") %>
     </div>
   </body>
 </html>

@@ -14,17 +14,19 @@
   <body>
     <div class="container">
       <!-- Navigation Bar -->
-      <%- include("./components/navNoUser.ejs") %>
+      <%- include("./components/navUser.ejs") %>
       <main class="row">
         <div class="col-8">
           <!-- List housing summaries with links to further details -->
-          <%- include("./components/listings.ejs") %>
+          <%- include("./components/listingsSelect.ejs") %>
         </div>
         <!-- /.col-8 -->
-        <!-- Search Listings side bar (right 4 cols) -->
         <div class="col-4">
-          <%- include("./components/listingsSearch.ejs") %>
+          <!-- Create Listing side bar (right 4 cols) -->
+          <%- include("./components/messageCheck.ejs") %>
+          <%- include("./components/listingCreate.ejs") %>
         </div>
+        <!-- /.col-4 -->
       </main>
       <!-- Footer -->
       <%- include("./components/footer.ejs") %>
