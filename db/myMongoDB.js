@@ -197,44 +197,8 @@ let StudentHousingDBController = function () {
       const queryResult = await listingsCollection
         .aggregate([
           {
-            $unwind: {
-              path: "$rating",
-            },
-          },
-
-          {
-            $group: {
-              _id: "$_id",
-              location: {
-                $last: "$location",
-              },
-              openingDate: {
-                $last: "$openingDate",
-              },
-              size: {
-                $last: "$size",
-              },
-              unitType: {
-                $last: "$unitType",
-              },
-              offer: {
-                $last: "$offer",
-              },
-              description: {
-                $last: "$description",
-              },
-              leaseInMonths: {
-                $last: "$leaseInMonths",
-              },
-              available: {
-                $last: "$available",
-              },
-              authorID: {
-                $last: "$authorID",
-              },
-              avgRating: {
-                $avg: "$rating.rating",
-              },
+            $addFields: {
+              avgRating: { $avg: "$rating.rating" },
             },
           },
         ])
