@@ -29,16 +29,16 @@ router.get("/", async function (req, res) {
       const ownerListings = await studentHousingDB.getListingByAuthorID(
         authorID
       );
-      console.log("render ownerHome ");
-      res.render("ownerHome", {
+      console.log("render ownerHomePage ");
+      res.render("ownerHomePage", {
         title: "StudentHousingFinderOwnerHome",
         listings: ownerListings,
         username: user.username,
         authorID: authorID,
       });
     } else {
-      console.log("render studentHome ");
-      res.render("studentHome", {
+      console.log("render studentHomePage ");
+      res.render("studentHomePage", {
         title: "StudentHousingFinderStudentHome",
         listings: listings,
         username: user.username,
@@ -46,7 +46,7 @@ router.get("/", async function (req, res) {
       });
     }
   } else {
-    console.log("render index ");
+    console.log("render index");
     res.render("index", {
       title: "StudentHousingFinderHome",
       listings: listings,
@@ -108,8 +108,8 @@ router.post("/user", async function (req, res) {
 //       console.log("owner session: ", req.session);
 //       let ownerListings = await studentHousingDB.getListingByAuthorID(authorID);
 
-//       // console.log("render ownerHome ");
-//       res.render("ownerHome", {
+//       // console.log("render ownerHomePage ");
+//       res.render("ownerHomePage", {
 //         title: "StudentHousingFinderOwnerHome",
 //         listings: ownerListings,
 //         username: owner.username,
@@ -121,9 +121,9 @@ router.post("/user", async function (req, res) {
 //       );
 //       // console.log("got student", student);
 
-//       console.log("render studentHome ");
+//       console.log("render studentHomePage ");
 //       try {
-//         res.render("studentHome", {
+//         res.render("studentHomePage", {
 //           title: "StudentHousingFinderStudentHome",
 //           listings: listings,
 //           username: user.username,
@@ -134,7 +134,7 @@ router.post("/user", async function (req, res) {
 //       }
 //     }
 //   } else {
-//     // console.log("render index ");
+//     // console.log("render index");
 //     res.render("index", {
 //       title: "StudentHousingFinderHome",
 //       listings: listings,
@@ -150,17 +150,17 @@ router.get("/logout", (req, res) => {
 
 /* GET register. */
 router.get("/register", function (req, res) {
-  res.render("register");
+  res.render("registerPage");
 });
 
 /* GET ownerRegister. */
 router.get("/owner", function (req, res) {
-  res.render("ownerRegister");
+  res.render("ownerRegisterPage");
 });
 
 /* GET studentRegister. */
 router.get("/student", function (req, res) {
-  res.render("studentRegister");
+  res.render("studentRegisterPage");
 });
 
 // /* POST create listing. */
@@ -282,7 +282,7 @@ router.get("/listings/:listingID", async function (req, res) {
       time = time.substring(1);
     }
 
-    res.render("listingDetails", {
+    res.render("listingDetailsPage", {
       listing,
       user: session.userid,
       rating,
@@ -309,7 +309,7 @@ router.get("/listings/update/:listingID", async function (req, res) {
   session = req.session;
   console.log("session.userid: ", session);
 
-  res.render("listingUpdate", {
+  res.render("listingUpdatePage", {
     listing: listing[0],
     username: session.userid,
   });

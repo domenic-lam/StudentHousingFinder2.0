@@ -15,105 +15,15 @@
 
   <body>
     <div class="container">
-     
-
-      <main>
-        <div class="row justify-content-center">
-          <div class="col-6">
-        <h1>Student Registration👨‍🎓</h1>
-        <form action="/auth/registerStudent" method="POST">
-          <div class="form-group">
-            <label for="fistName" class="form-label">First Name</label>
-            <input
-              type="text"
-              class="form-control"
-              name="firstName"
-              id="firstName"
-            />
-          </div>
-          <div class="form-group">
-            <label for="lastName" class="form-label">Last Name</label>
-            <input
-              type="text"
-              class="form-control"
-              name="lastName"
-              id="lastName"
-            />
-          </div>
-          <div class="form-group">
-            <label for="username" class="form-label">Username</label>
-            <input
-              type="text"
-              class="form-control"
-              name="username"
-              id="username"
-            />
-          </div>
-          <div class="form-group">
-            <label for="password" class="form-label">Password</label>
-            <input
-              type="password"
-              class="form-control"
-              name="password"
-              id="password"
-            />
-          </div>
-          <div class="form-group">
-            <label for="password" class="form-label">Confirm Password</label>
-            <input
-              type="password"
-              class="form-control"
-              name="confirmedpassword"
-              id="confirmedpassword"
-            />
-          </div>
-           <div class="form-group">
-            <label for="budget" class="form-label">Budget</label>
-            <input
-              type="number"
-              class="form-control"
-              name="budget"
-              id="budget"
-            />
-          </div>
-          <div class="form-group">
-            <label for="year" class="form-label">Year</label>
-            <input type="number" class="form-control" name="year" id="year" placeholder="example: 2022" />
-
-          </div></br>
-         
-          <div class="form-group">
-            <select id="school" name="schoolID">
-              <option>select school</option>
-              <option value="1">Northeastern University</option>
-              <option value="2">SFSU</option>
-              <option value="3">UCSB</option>
-              <option value="4">NYU</option>
-              <option value="5">CalPoly</option>
-              <option value="6">UOP</option>
-              <option value="7">UCSD</option>
-              <option value="8">UCSC</option>
-              <option value="9">UCLA</option>
-              <option value="10">City College</option>
-            </select>
-          </div></br>
-          <div class="form-group">
-            <select id="season" name="semester">
-              <option>select semester</option>
-              <option value="fall">fall</option>
-              <option value="winter">winter</option>
-              <option value="spring">spring</option>
-              <option value="summer">summer</option>
-            </select>
-          </div></br>
-
-          <button type="submit" class="btn btn-primary">Submit</button>
-          <p>Already a member? <a href="/">Login</a></p>
-          <p>Not a Student? <a href="/owner">Register Here</a></p>
-        </form>
+      <!-- Navigation Bar -->
+      <%- include("./components/navNoUser.ejs") %>
+      <main class="row justify-content-center">
+        <div class="col-6">
+          <%- include("./components/registerStudent.ejs") %>
+        </div>
       </main>
-      </div>
-    </div>
+      <!-- Footer -->
+      <%- include("./components/footer.ejs") %>
     </div>
   </body>
 </html>
