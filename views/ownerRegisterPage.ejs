@@ -10,22 +10,14 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
   </head>
+
   <body>
     <div class="container">
       <!-- Navigation Bar -->
       <%- include("./components/navNoUser.ejs") %>
-      <main class="row">
-        <div class="col-8">
-          <!-- List housing summaries with links to further details -->
-          <%- include("./components/listings.ejs") %>
-        </div>
-        <!-- /.col-8 -->
-        <!-- Search Listings side bar (right 4 cols) -->
-        <div class="col-4">
-          <%- include("./components/listingsSearch.ejs") %>
-        </div>
-      </main>
+      <main class="row"><%- include("./components/registerOwner.ejs") %></main>
       <!-- Footer -->
       <%- include("./components/footer.ejs") %>
     </div>

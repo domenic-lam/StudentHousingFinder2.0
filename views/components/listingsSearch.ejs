@@ -1,0 +1,78 @@
+<h3>Search Listings</h3>
+
+<form action="/search/Listing" method="POST">
+  <div>
+    <label class="form-label"
+      >Location:
+      <input class="form-control" name="location" type="text" />
+    </label>
+  </div>
+  <div>
+    <label class="form-label"
+      >Opening Date:
+      <input
+        class="form-control"
+        name="openingDate"
+        type="text"
+        placeholder="MM/DD/YYYY"
+      />
+    </label>
+  </div>
+  <div>
+    <label class="form-label"
+      >Size (Sqft):
+      <input class="form-control" name="size" type="number" placeholder="550" />
+    </label>
+  </div>
+  <div>
+    <label for="search" class="form-label"
+      >Unit type:
+      <select class="form-select" id="search" name="search">
+        <option value="dorm">Dorm</option>
+        <option value="apartment">Apartment</option>
+      </select>
+    </label>
+    <input
+      class="form-control"
+      id="criteria"
+      name="criteria"
+      type="hidden"
+      value="unitType"
+    />
+  </div>
+  <div>
+    <label class="form-label"
+      >Offer (Per month):
+      <input
+        class="form-control"
+        name="offer"
+        type="number"
+        placeholder="600"
+      />
+    </label>
+  </div>
+  <div>
+    <label class="form-label"
+      >Description:
+      <textarea
+        class="form-control"
+        id="description"
+        name="description"
+        rows="4"
+        placeholder="Please provide a short description of the unit."
+      ></textarea>
+    </label>
+  </div>
+  <div>
+    <label class="form-label"
+      >Lease Term (Months):
+      <input
+        class="form-control"
+        name="leaseInMonths"
+        type="number"
+        value="6"
+      />
+    </label>
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>

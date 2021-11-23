@@ -1,0 +1,48 @@
+<h1 class="display-1"><%= listing.location %></h1>
+<div>
+  <br />
+  Opening Date: <%= listing.openingDate %>
+  <br />
+  Size: <%= listing.size %>
+  <br />
+  Unit Type: <%= listing.unitType %>
+  <br />
+  Offer: <%= listing.offer %>
+  <br />
+  Description: <%= listing.description %>
+  <br />
+  Available: <%= listing.available %>
+  <br />
+  Owner: <%= owner.firstName %> <%= owner.lastName %><br />
+  <% if (rating != undefined) { %> My Rating: <%= rating.rating %>
+  <form action="/updateRating" method="POST">
+    <label class="form-label">1</label>
+    <input type="checkbox" id="rating" name="rating" value="1" />
+    <label class="form-label">2</label>
+    <input type="checkbox" id="rating" name="rating" value="2" />
+    <label class="form-label">3</label>
+    <input type="checkbox" id="rating" name="rating" value="3" />
+    <label class="form-label">4</label>
+    <input type="checkbox" id="rating" name="rating" value="4" />
+    <label class="form-label">5</label>
+    <input type="checkbox" id="rating" name="rating" value="5" />
+    <input type="hidden" name="listingID" value="<%= listing.listingID %>" />
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+  <%} else { %> No Rating:
+  <form action="/createRating" method="POST">
+    <label class="form-label">1</label>
+    <input type="checkbox" id="rating" name="rating" value="1" />
+    <label class="form-label">2</label>
+    <input type="checkbox" id="rating" name="rating" value="2" />
+    <label class="form-label">3</label>
+    <input type="checkbox" id="rating" name="rating" value="3" />
+    <label class="form-label">4</label>
+    <input type="checkbox" id="rating" name="rating" value="4" />
+    <label class="form-label">5</label>
+    <input type="checkbox" id="rating" name="rating" value="5" />
+    <input type="hidden" name="listingID" value="<%= listing.listingID %>" />
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+  <% } %>
+</div>

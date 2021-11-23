@@ -11,16 +11,18 @@
       crossorigin="anonymous"
     />
   </head>
+
   <body>
     <div class="container">
       <!-- Navigation Bar -->
-      <%- include("./components/navNoUser.ejs") %>
+      <%- include("./components/navUser.ejs") %>
       <main class="row">
         <div class="col-8">
           <!-- List housing summaries with links to further details -->
           <%- include("./components/listings.ejs") %>
         </div>
         <!-- /.col-8 -->
+
         <!-- Search Listings side bar (right 4 cols) -->
         <div class="col-4">
           <%- include("./components/listingsSearch.ejs") %>
