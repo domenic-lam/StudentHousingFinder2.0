@@ -1,11 +1,11 @@
 let express = require("express");
 let router = express.Router();
-let studenthousingDB = require("../db/mySQLiteDB.js");
+let studenthousingDB = require("../db/myMongoDB.js");
 
 router.post("/registerOwner", async (req, res) => {
   //this route will handle registering a user to the database
 
-  //we will first check if the username already exists
+  // we will first check if the username already exists
   let duplicateUsername = await studenthousingDB.getUserByUsername(
     req.body.username
   );
@@ -14,22 +14,18 @@ router.post("/registerOwner", async (req, res) => {
     //res.send({ registered: false });
     res.redirect("/owner?=username_already_taken");
   } else {
+    //set authorID to unqiue id
     let newUserObj = {
       username: req.body.username,
       password: req.body.password,
-    };
-    console.log(newUserObj);
-    const registered = await studenthousingDB.createNewUser(newUserObj);
-    let newOwnerObj = {
-      username: req.body.username,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
     };
-    const owner = await studenthousingDB.createNewOwner(newOwnerObj);
-    console.log("owner: ", owner);
 
-    //if the register was successful, we send a true resposne
-    if (registered != undefined) {
+    console.log(newUserObj);
+    await studenthousingDB.createNewOwner(newUserObj);
+
+    if (newUserObj != undefined) {
       res.redirect("/");
     } else {
       // send a false response to the frontend if something went wrong with the registration
@@ -54,13 +50,6 @@ router.post("/registerStudent", async (req, res) => {
     let newUserObj = {
       username: req.body.username,
       password: req.body.password,
-    };
-    console.log(newUserObj);
-    const registered = await studenthousingDB.createNewUser(newUserObj);
-    console.log(registered);
-
-    let newStudentObj = {
-      username: req.body.username,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       schoolID: req.body.schoolID,
@@ -68,62 +57,16 @@ router.post("/registerStudent", async (req, res) => {
       year: req.body.year,
       budget: req.body.budget,
     };
+    console.log(newUserObj);
+    await studenthousingDB.createNewStudent(newUserObj);
 
-    console.log(newStudentObj);
-    const student = await studenthousingDB.createNewStudent(newStudentObj);
-    console.log(student);
-
-    //if the register was successful, we send a true resposne
-    if (registered != undefined) {
+    if (newUserObj != undefined) {
       res.redirect("/");
     } else {
       // send a false response to the frontend if something went wrong with the registration
       //res.send({ registered: false });
       res.redirect("/student");
     }
-  }
-});
-router.post("/loginUser", async (req, res) => {
-  const userObj = {
-    username: req.body.username,
-    password: req.body.password,
-  };
-
-  try {
-    const login = await studenthousingDB.getUserCred(userObj);
-    if (login != undefined) {
-      req.session.user = req.body.username;
-      //res.send({ login: "ok", user: req.session.user });
-      const user = req.session.user;
-      console.log(user);
-      console.log(req.flash("user", user));
-      res.redirect("/");
-      //req.flash("user", user);
-    } else {
-      //res.send({ login: "wrong username or password" });
-    }
-  } catch (e) {
-    console.log("Error", e);
-    res.status(400).send({ err: e });
-  }
-});
-
-router.post("/logoutUser", async (req, res) => {
-  const username = req.body;
-
-  try {
-    const login = await studenthousingDB.getUserCred(username);
-    if (login === false) {
-      req.session.user = "";
-      const user = req.session.user;
-      req.flash("user", user);
-      //res.send({ logout: "ok", user: req.session.user });
-    } else {
-      //res.send({ logout: "error" });
-    }
-  } catch (e) {
-    console.log("Error", e);
-    res.status(400).send({ err: e });
   }
 });
 
