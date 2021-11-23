@@ -6,75 +6,92 @@ const { MongoClient, ObjectId } = require("mongodb");
 
 let StudentHousingDBController = function () {
   let studentHousingDB = {};
-  const uri = "mongodb://localhost:27017";
+  const uri = process.env.MONGO_URL || "mongodb://localhost:27017";
   const DB_NAME = "project2";
 
-  //this function will save a new user to the database
-  studentHousingDB.createNewOwner = async (newUser) => {
-    {
-      let client;
-      try {
-        client = new MongoClient(uri, {
-          useUnifiedTopology: true,
-          useNewUrlParser: true,
-        });
+  // Initialize DB by importing csv with entries to localhost
+  // studentHousingDB.initializeDB = async () => {
+  //   let client;
+  //   try {
+  //     client = new MongoClient(uri, {
+  //       useUnifiedTopology: true,
+  //       useNewUrlParser: true,
+  //     });
 
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const usersCollection = db.collection("users");
-        const max = await usersCollection
-          .aggregate([
-            {
-              $group: {
-                _id: "$_id",
-                count: {
-                  $max: "$authorID",
-                },
+  //     await client.connect();
+  //     const db = client.db(DB_NAME);
+  //     const usersCollection = db.collection("users");
+  //     const listingsCollection = db.collection("listings");
+  //     // const insertResult = await usersCollection;
+  //     // return insertResult.insertedCount;
+  //   } finally {
+  //     client.close();
+  //   }
+  // };
+
+  //this function will save a new user to the database
+  studentHousingDB.createNewOwner = async newUser => {
+    let client;
+    try {
+      client = new MongoClient(uri, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+      });
+
+      await client.connect();
+      const db = client.db(DB_NAME);
+      const usersCollection = db.collection("users");
+      const max = await usersCollection
+        .aggregate([
+          {
+            $group: {
+              _id: "$_id",
+              count: {
+                $max: "$authorID",
               },
             },
-          ])
-          .sort({ count: -1 })
-          .limit(1)
-          .toArray();
+          },
+        ])
+        .sort({ count: -1 })
+        .limit(1)
+        .toArray();
 
-        const authorID = max[0].count + 1;
+      const authorID = max[0].count + 1;
 
-        console.log(authorID);
-        const newOwner = {
-          username: newUser.username,
-          password: newUser.password,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-          authorID: authorID,
-        };
-        const insertResult = await usersCollection.insertOne(newOwner);
-        return insertResult.insertedCount;
-      } finally {
-        client.close();
-      }
-    }
-  };
-  studentHousingDB.createNewStudent = async (newUser) => {
-    {
-      let client;
-      try {
-        client = new MongoClient(uri, {
-          useUnifiedTopology: true,
-          useNewUrlParser: true,
-        });
-
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const usersCollection = db.collection("users");
-        const insertResult = await usersCollection.insertOne(newUser);
-        return insertResult.insertedCount;
-      } finally {
-        client.close();
-      }
+      console.log(authorID);
+      const newOwner = {
+        username: newUser.username,
+        password: newUser.password,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        authorID: authorID,
+      };
+      const insertResult = await usersCollection.insertOne(newOwner);
+      return insertResult.insertedCount;
+    } finally {
+      client.close();
     }
   };
 
-  studentHousingDB.getOwnerByAuthorID = async (authorID) => {
+  studentHousingDB.createNewStudent = async newUser => {
+    let client;
+    try {
+      client = new MongoClient(uri, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+      });
+
+      await client.connect();
+      const db = client.db(DB_NAME);
+      const usersCollection = db.collection("users");
+      const insertResult = await usersCollection.insertOne(newUser);
+      return insertResult.insertedCount;
+    } finally {
+      client.close();
+    }
+  };
+
+  studentHousingDB.getOwnerByAuthorID = async authorID => {
     let client;
     try {
       client = new MongoClient(uri, {
@@ -98,7 +115,7 @@ let StudentHousingDBController = function () {
     }
   };
 
-  studentHousingDB.getUserByUsername = async (query) => {
+  studentHousingDB.getUserByUsername = async query => {
     let client;
     try {
       client = new MongoClient(uri, {
@@ -123,7 +140,7 @@ let StudentHousingDBController = function () {
   // this function will query the database for a user object by using an username string
 
   // this function will query the database for a user object by using an username string and password
-  studentHousingDB.getUserCred = async (user) => {
+  studentHousingDB.getUserCred = async user => {
     let client;
     try {
       client = new MongoClient(uri, {
@@ -151,34 +168,33 @@ let StudentHousingDBController = function () {
   //  */
   // // create new Listing
   studentHousingDB.createListing = async (newListing, authorID) => {
-    {
-      let client;
-      try {
-        client = new MongoClient(uri, {
-          useUnifiedTopology: true,
-          useNewUrlParser: true,
-        });
+    let client;
+    try {
+      client = new MongoClient(uri, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+      });
 
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const listingsCollection = db.collection("listings");
+      await client.connect();
+      const db = client.db(DB_NAME);
+      const listingsCollection = db.collection("listings");
 
-        const newlisting = {
-          location: newListing.location,
-          openingDate: newListing.openingDate,
-          size: newListing.size,
-          unitType: newListing.unitType,
-          offer: newListing.offer,
-          description: newListing.description,
-          leaseInMonths: newListing.leaseInMonths,
-          available: newListing.available,
-          authorID: authorID,
-        };
-        const insertResult = await listingsCollection.insertOne(newlisting);
-        return insertResult.insertedCount;
-      } finally {
-        client.close();
-      }
+      const newlisting = {
+        title: newListing.title,
+        location: newListing.location,
+        unitType: newListing.unitType,
+        sizeInSqFt: newListing.size,
+        rentPerMonth: newListing.offer,
+        description: newListing.description,
+        openingDate: newListing.openingDate,
+        leaseInMonths: newListing.leaseInMonths,
+        available: newListing.available,
+        authorID: authorID,
+      };
+      const insertResult = await listingsCollection.insertOne(newlisting);
+      return insertResult.insertedCount;
+    } finally {
+      client.close();
     }
   };
 
@@ -290,7 +306,7 @@ let StudentHousingDBController = function () {
   // };
 
   // // read selected Listing info
-  studentHousingDB.getListingByID = async (listingID) => {
+  studentHousingDB.getListingByID = async listingID => {
     let client;
     try {
       client = new MongoClient(uri, {
@@ -313,7 +329,7 @@ let StudentHousingDBController = function () {
   };
 
   // // read selected Listing info
-  studentHousingDB.getListingByAuthorID = async (authorID) => {
+  studentHousingDB.getListingByAuthorID = async authorID => {
     let client;
     try {
       client = new MongoClient(uri, {
@@ -384,7 +400,7 @@ let StudentHousingDBController = function () {
   // };
 
   // // update Listing info
-  studentHousingDB.updateListing = async (listingToUpdate) => {
+  studentHousingDB.updateListing = async listingToUpdate => {
     let client;
     try {
       client = new MongoClient(uri, {
@@ -400,12 +416,13 @@ let StudentHousingDBController = function () {
         },
         {
           $set: {
+            title: listingToUpdate.title,
             location: listingToUpdate.location,
-            openingDate: listingToUpdate.openingDate,
-            size: listingToUpdate.size,
+            sizeInSqFt: listingToUpdate.size,
             unitType: listingToUpdate.unitType,
-            offer: listingToUpdate.offer,
+            rentPerMonth: listingToUpdate.offer,
             description: listingToUpdate.description,
+            openingDate: listingToUpdate.openingDate,
             leaseInMonths: listingToUpdate.leaseInMonths,
             available: listingToUpdate.available,
           },
@@ -418,7 +435,7 @@ let StudentHousingDBController = function () {
   };
 
   // // delete Listing
-  studentHousingDB.deleteListing = async (listingToDelete) => {
+  studentHousingDB.deleteListing = async listingToDelete => {
     let client;
     try {
       client = new MongoClient(uri, {
@@ -441,23 +458,21 @@ let StudentHousingDBController = function () {
   //  ***************MESSAGE CRUD OPERATIONS*********************
   //  */
 
-  studentHousingDB.createMessage = async (newMessage) => {
-    {
-      let client;
-      try {
-        client = new MongoClient(uri, {
-          useUnifiedTopology: true,
-          useNewUrlParser: true,
-        });
+  studentHousingDB.createMessage = async newMessage => {
+    let client;
+    try {
+      client = new MongoClient(uri, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+      });
 
-        await client.connect();
-        const db = client.db(DB_NAME);
-        const messageCollection = db.collection("message");
-        const insertResult = await messageCollection.insertOne(newMessage);
-        return insertResult.insertedCount;
-      } finally {
-        client.close();
-      }
+      await client.connect();
+      const db = client.db(DB_NAME);
+      const messageCollection = db.collection("messages");
+      const insertResult = await messageCollection.insertOne(newMessage);
+      return insertResult.insertedCount;
+    } finally {
+      client.close();
     }
   };
 
@@ -484,26 +499,23 @@ let StudentHousingDBController = function () {
   //   }
   // };
 
-  studentHousingDB.getAllMessages = async (owner) => {
-    let db, stmt;
+  studentHousingDB.getAllMessages = async () => {
+    let client;
     try {
-      db = await connect();
-
-      stmt = await db.prepare(`SELECT *
-        FROM Message
-        WHERE sender IS :sender OR receiver IS :sender
-        ORDER BY time DESC
-      `);
-
-      stmt.bind({
-        ":sender": owner,
+      client = new MongoClient(uri, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
       });
 
-      // console.log(await stmt.all());
-      return await stmt.all();
+      await client.connect();
+      const db = client.db(DB_NAME);
+      const messageCollection = db.collection("messages");
+      // we will be using the user's email as their username
+      const queryResult = await messageCollection.find().toArray();
+      console.log(queryResult);
+      return queryResult;
     } finally {
-      stmt.finalize();
-      db.close();
+      client.close();
     }
   };
 

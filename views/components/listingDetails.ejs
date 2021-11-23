@@ -1,15 +1,19 @@
-<h1 class="display-1"><%= listing.location %></h1>
+<h1 class="display-1"><%= listing.title %></h1>
 <div>
   <br />
-  Opening Date: <%= listing.openingDate %>
-  <br />
-  Size: <%= listing.size %>
+  Location: <%= listing.location %>
   <br />
   Unit Type: <%= listing.unitType %>
   <br />
-  Offer: <%= listing.offer %>
+  Size (Sqft): <%= listing.sizeInSqFt %>
+  <br />
+  Rent Per Month: <%= listing.rentPerMonth %>
   <br />
   Description: <%= listing.description %>
+  <br />
+  Opening Date: <%= listing.openingDate %>
+  <br />
+  Lease Term (Months): <%= listing.leaseInMonths %>
   <br />
   Available: <%= listing.available %>
   <br />
